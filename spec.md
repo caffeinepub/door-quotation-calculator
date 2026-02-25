@@ -1,12 +1,11 @@
 # Specification
 
 ## Summary
-**Goal:** Move customer name and mobile number collection to a dedicated start screen, and remove those columns from the door entries table.
+**Goal:** Display a read-only customer details section (name and mobile number) above the DoorEntryForm on the main door entry screen.
 
 **Planned changes:**
-- Add a new customer info screen as the first screen of the app, with fields for customer name and mobile number and a "Continue"/"Start" button
-- User must complete and submit the customer info screen before accessing the door entry form and door list view
-- Store the submitted customer name and mobile in app state and pass them through to the quotation and WhatsApp share output
-- Remove the Customer and Mobile columns from the DoorList table so it only shows Sr, Size, and pricing columns
+- Add a read-only customer details section in the form view of App.tsx, above the DoorEntryForm component
+- Show the customer name and mobile number collected from the CustomerInfoForm screen
+- Style the section consistently with the existing amber/stone warm neutral theme
 
-**User-visible outcome:** When the app loads, users first see a screen to enter their name and mobile number. After submitting, they proceed to the door entry and list view, which no longer shows customer/mobile columns per row. The customer info is still included in the generated quotation and WhatsApp output.
+**User-visible outcome:** When a user reaches the door entry form, they can see the customer's name and mobile number displayed above the form, remaining visible while they add door entries.

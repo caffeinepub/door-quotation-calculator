@@ -1,54 +1,36 @@
 {
   "kind": "build_request",
-  "title": "Move customer name & mobile form to app start screen",
+  "title": "Display customer details above new door entry form",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-1",
-      "text": "Remove the Customer and Mobile columns from the DoorList table. The door entries table should only show Sr, Size, and pricing columns — no customer/mobile data displayed per row.",
+      "id": "REQ-3",
+      "text": "In the main door entry view (the 'form' screen in App.tsx), display a read-only customer details section above the DoorEntryForm component, showing the collected customer name and mobile number from state.",
       "target": "frontend",
       "source": {
         "messageIds": [
           "msg-4"
         ],
         "quotes": [
-          "Remove form here add in starting"
+          "Add customer details above new door entry"
         ]
       },
       "acceptanceCriteria": [
-        "DoorList table no longer renders Customer or Mobile columns",
-        "Table header row does not include Customer or Mobile headings",
-        "Each door entry row only shows Sr, Size, and coating price columns"
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "text": "Add a customer info entry screen at the very beginning of the app flow (before the door entry form). This screen should collect the customer name and mobile number with two text input fields and a 'Continue' or 'Start' button. Only after submitting this screen should the user proceed to the door dimension entry and door list view.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-4"
-        ],
-        "quotes": [
-          "Remove form here add in starting"
-        ]
-      },
-      "acceptanceCriteria": [
-        "On first load, a customer info screen is shown with fields for customer name and mobile number",
-        "User cannot reach the door entry form until they submit the customer info screen",
-        "Submitting the customer info screen stores the name and mobile in app state and navigates to the door entry / door list view",
-        "The stored customer name and mobile number are still passed through to the quotation view and WhatsApp share output"
+        "The customer name and mobile number collected on the CustomerInfoForm screen are visible above the DoorEntryForm on the form view.",
+        "The customer details section is read-only (not editable inline).",
+        "The section is styled consistently with the existing amber/stone warm neutral theme.",
+        "The customer details section remains visible while the user adds door entries."
       ]
     }
   ],
   "constraints": [
-    "Do not modify files under frontend/src/hooks/ or frontend/src/components/ui/",
-    "Customer name and mobile number must still be available in the quotation/WhatsApp output"
+    "Do not modify files under frontend/src/hooks/ or frontend/src/components/ui.",
+    "Do not alter the CustomerInfoForm flow or the three-view navigation logic (customerInfo → form → quotation) in App.tsx beyond adding the display section."
   ],
   "nonGoals": [
-    "Changing backend schema or Motoko actor",
-    "Adding authentication or login",
-    "Redesigning the door entry form layout"
+    "Allowing the user to edit customer details from the form/door-entry view.",
+    "Changes to the QuotationView customer info display.",
+    "Backend changes."
   ],
   "imageRequirements": {
     "required": [],

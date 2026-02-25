@@ -1,30 +1,30 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "New project",
+  "summary": "Project involves a form-based UI with door entry and customer details sections.",
   "architectural_notes": [],
   "known_issues": [],
   "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-remove-the-customer-and-mobile-columns-from-the-doorlist-table-the-door-entries-table-should-only-show-sr-size-and-pricing-columns-no-customer-mobile-data-displayed-per-row",
-      "title": "Remove the Customer and Mobile columns from the DoorList table. The door entries table should only show Sr, Size, and pricing columns — no customer/mobile data displayed per row.",
+      "id": "feature-in-the-main-door-entry-view-the-form-screen-in-app-tsx-display-a-read-only-customer-details-section-above-the-doorentryform-component-showing-the-collected-customer-name-and-mobile-number-from-state",
+      "title": "In the main door entry view (the 'form' screen in App.tsx), display a read-only customer details section above the DoorEntryForm component, showing the collected customer name and mobile number from state.",
       "reqIds": [
-        "REQ-1"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-a-customer-info-entry-screen-at-the-very-beginning-of-the-app-flow-before-the-door-entry-form-this-screen-should-collect-the-customer-name-and-mobile-number-with-two-text-input-fields-and-a-continue-or-start-button-only-after-submitting-this-screen-should-the-user-proceed-to-the-door-dimension-entry-and-door-list-view",
-      "title": "Add a customer info entry screen at the very beginning of the app flow (before the door entry form). This screen should collect the customer name and mobile number with two text input fields and a 'Continue' or 'Start' button. Only after submitting this screen should the user proceed to the door dimension entry and door list view.",
-      "reqIds": [
-        "REQ-2"
+        "REQ-3"
       ],
       "version": 1
     }
   ],
-  "new_feature_requests": [],
-  "projectName": "Move customer name & mobile form to app start screen",
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Add customer details section above new door entry",
+      "reqIds": [],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "Display customer details above new door entry form",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

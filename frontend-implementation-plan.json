@@ -1,43 +1,22 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Move customer name & mobile form to app start screen",
+  "title": "Display customer details above new door entry form",
   "requirements": [
     {
-      "id": "REQ-1",
-      "summary": "Remove Customer and Mobile columns from DoorList table, showing only Sr, Size, and pricing columns",
+      "id": "REQ-3",
+      "summary": "Display read-only customer details section above DoorEntryForm in the main door entry view",
       "acceptanceCriteria": [
-        "DoorList table no longer renders Customer or Mobile columns",
-        "Table header row does not include Customer or Mobile headings",
-        "Each door entry row only shows Sr, Size, and coating price columns"
+        "The customer name and mobile number collected on the CustomerInfoForm screen are visible above the DoorEntryForm on the form view.",
+        "The customer details section is read-only (not editable inline).",
+        "The section is styled consistently with the existing amber/stone warm neutral theme.",
+        "The customer details section remains visible while the user adds door entries."
       ],
       "file_operations": [
-        {
-          "path": "frontend/src/components/DoorList.tsx",
-          "operation": "modify",
-          "description": "Remove Customer and Mobile column headers from the table header row. Remove the corresponding table data cells that render customerName and mobileNumber from each door entry row. Keep only Sr, Size, and the four coating price columns (Single, Double, Laminate, Double Sagwanpatti) in both the header and body rows."
-        }
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "summary": "Add customer info entry screen at app start to collect name and mobile before door entry",
-      "acceptanceCriteria": [
-        "On first load, a customer info screen is shown with fields for customer name and mobile number",
-        "User cannot reach the door entry form until they submit the customer info screen",
-        "Submitting the customer info screen stores the name and mobile in app state and navigates to the door entry / door list view",
-        "The stored customer name and mobile number are still passed through to the quotation view and WhatsApp share output"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/CustomerInfoForm.tsx",
-          "operation": "create",
-          "description": "Create a new component that renders a customer information entry form with two text input fields (customer name and mobile number) and a Continue/Start button. Use shadcn/ui Input and Button components for consistent styling. The component should accept onSubmit callback prop that receives the customer name and mobile number values. Include basic validation to ensure both fields are filled before allowing submission. Style the form with the app's amber/gold theme to match the existing design system."
-        },
         {
           "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Add a new state variable to track whether customer info has been submitted (e.g., hasCustomerInfo boolean). Conditionally render the CustomerInfoForm component when hasCustomerInfo is false, preventing access to the door entry form and door list. When the customer info form is submitted, set hasCustomerInfo to true, store the customerName and mobileNumber in the existing state, and display the main door entry interface. Ensure the existing customerName and mobileNumber state variables continue to be passed to QuotationView and used in the WhatsApp formatter. Import and wire the new CustomerInfoForm component at the top of the render method before the existing form/quotation view conditional."
+          "description": "In the 'form' view section of App.tsx (where currentView === 'form'), add a customer details display component or section above the DoorEntryForm component. Pass customerName and customerMobile from state as props to display them read-only. Style the section using Card from shadcn/ui with consistent amber/stone theme spacing and typography. Ensure this section remains visible throughout the door entry process without interfering with the existing three-view navigation logic (customerInfo → form → quotation)."
         }
       ]
     }

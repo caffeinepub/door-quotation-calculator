@@ -2,10 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-remove-the-customer-and-mobile-columns-from-the-doorlist-table-the-door-entries-table-should-only-show-sr-size-and-pricing-columns-no-customer-mobile-data-displayed-per-row",
-      "featureTitle": "Remove the Customer and Mobile columns from the DoorList table. The door entries table should only show Sr, Size, and pricing columns — no customer/mobile data displayed per row.",
+      "featureId": "feature-in-the-main-door-entry-view-the-form-screen-in-app-tsx-display-a-read-only-customer-details-section-above-the-doorentryform-component-showing-the-collected-customer-name-and-mobile-number-from-state",
+      "featureTitle": "In the main door entry view (the 'form' screen in App.tsx), display a read-only customer details section above the DoorEntryForm component, showing the collected customer name and mobile number from state.",
       "files": [
-        "frontend/src/components/DoorList.tsx"
+        "frontend/src/App.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -15,26 +15,7 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-1"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-a-customer-info-entry-screen-at-the-very-beginning-of-the-app-flow-before-the-door-entry-form-this-screen-should-collect-the-customer-name-and-mobile-number-with-two-text-input-fields-and-a-continue-or-start-button-only-after-submitting-this-screen-should-the-user-proceed-to-the-door-dimension-entry-and-door-list-view",
-      "featureTitle": "Add a customer info entry screen at the very beginning of the app flow (before the door entry form). This screen should collect the customer name and mobile number with two text input fields and a 'Continue' or 'Start' button. Only after submitting this screen should the user proceed to the door dimension entry and door list view.",
-      "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/components/CustomerInfoForm.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-2"
+        "REQ-3"
       ],
       "confidence": "high"
     }

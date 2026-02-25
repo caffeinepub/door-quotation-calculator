@@ -2,10 +2,47 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-in-the-main-door-entry-view-the-form-screen-in-app-tsx-display-a-read-only-customer-details-section-above-the-doorentryform-component-showing-the-collected-customer-name-and-mobile-number-from-state",
-      "featureTitle": "In the main door entry view (the 'form' screen in App.tsx), display a read-only customer details section above the DoorEntryForm component, showing the collected customer name and mobile number from state.",
+      "featureId": "feature-update-the-quotationview-component-to-display-a-unified-table-with-columns-sr-door-size-sq-ft-single-coating-double-coating-double-sagwan-laminate-each-row-showing-all-four-coating-prices-side-by-side-for-that-door-followed-by-a-total-row-summing-each-coating-column-and-the-total-sq-ft",
+      "featureTitle": "Update the QuotationView component to display a unified table with columns: SR, DOOR SIZE, SQ.FT, SINGLE COATING, DOUBLE COATING, DOUBLE + SAGWAN, LAMINATE — each row showing all four coating prices side by side for that door, followed by a Total row summing each coating column and the total sq.ft.",
       "files": [
-        "frontend/src/App.tsx"
+        "frontend/src/components/QuotationView.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-1"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-below-the-main-pricing-table-display-a-coating-type-summary-section-listing-each-coating-type-with-its-per-sq-ft-rate-and-grand-total-in-the-format-single-coating-185-00-sq-ft-6-706-00-one-line-per-coating-type",
+      "featureTitle": "Below the main pricing table, display a 'Coating Type Summary' section listing each coating type with its per-sq.ft rate and grand total, in the format: 'Single Coating (@ ₹185.00/sq.ft): ₹6,706.00', one line per coating type.",
+      "files": [
+        "frontend/src/components/QuotationView.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-2"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-ensure-the-quotation-view-can-be-exported-as-a-pdf-the-pdf-must-include-the-customer-name-mobile-number-the-full-pricing-table-sr-door-size-sq-ft-all-four-coating-columns-total-row-and-the-coating-type-summary-section-the-pdf-layout-must-be-print-friendly-and-omit-any-action-buttons-print-share-back",
+      "featureTitle": "Ensure the quotation view can be exported as a PDF. The PDF must include the customer name, mobile number, the full pricing table (SR, DOOR SIZE, SQ.FT, all four coating columns, Total row), and the Coating Type Summary section. The PDF layout must be print-friendly and omit any action buttons (Print, Share, Back).",
+      "files": [
+        "frontend/src/components/QuotationView.tsx",
+        "frontend/src/index.css"
       ],
       "components": [
         "core-infrastructure@1.0.2",

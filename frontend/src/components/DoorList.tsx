@@ -26,11 +26,12 @@ export default function DoorList({ doors, onRemoveDoor }: DoorListProps) {
 
         {/* Horizontally scrollable table */}
         <div className="overflow-x-auto -mx-1">
-          <table className="w-full min-w-[480px] text-sm">
+          <table className="w-full min-w-[520px] text-sm">
             <thead>
               <tr className="border-b border-amber-200">
                 <th className="text-left py-2 px-2 font-semibold text-muted-foreground text-xs w-8">Sr</th>
-                <th className="text-left py-2 px-2 font-semibold text-muted-foreground text-xs">Size</th>
+                <th className="text-left py-2 px-2 font-semibold text-muted-foreground text-xs">Actual Size</th>
+                <th className="text-left py-2 px-2 font-semibold text-muted-foreground text-xs">Cat. Size</th>
                 <th className="text-right py-2 px-2 font-semibold text-muted-foreground text-xs">Single</th>
                 <th className="text-right py-2 px-2 font-semibold text-muted-foreground text-xs">Double</th>
                 <th className="text-right py-2 px-2 font-semibold text-muted-foreground text-xs">D+Sag</th>
@@ -46,7 +47,8 @@ export default function DoorList({ doors, onRemoveDoor }: DoorListProps) {
                 const doubleTotal = sqFt * COATING_RATES[CoatingType.double_] * door.quantity;
                 const dSagTotal = sqFt * COATING_RATES[CoatingType.doubleSagwanpatti] * door.quantity;
                 const lamTotal = sqFt * COATING_RATES[CoatingType.laminate] * door.quantity;
-                const sizeLabel = formatActualSize(door.actualHeightInches, door.actualWidthInches);
+                const actualSizeLabel = formatActualSize(door.actualHeightInches, door.actualWidthInches);
+                const catSizeLabel = formatActualSize(door.catalogueHeight, door.catalogueWidth);
 
                 return (
                   <tr
@@ -54,7 +56,8 @@ export default function DoorList({ doors, onRemoveDoor }: DoorListProps) {
                     className="border-b border-amber-100 last:border-b-0 hover:bg-amber-50/40 transition-colors"
                   >
                     <td className="py-2.5 px-2 text-muted-foreground text-xs font-medium">{idx + 1}</td>
-                    <td className="py-2.5 px-2 text-foreground text-xs font-medium whitespace-nowrap">{sizeLabel}</td>
+                    <td className="py-2.5 px-2 text-foreground text-xs font-semibold whitespace-nowrap">{actualSizeLabel}</td>
+                    <td className="py-2.5 px-2 text-muted-foreground text-xs whitespace-nowrap">{catSizeLabel}</td>
                     <td className="py-2.5 px-2 text-right text-foreground text-xs whitespace-nowrap">
                       ₹{singleTotal.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
                     </td>

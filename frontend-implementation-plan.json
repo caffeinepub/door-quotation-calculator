@@ -1,22 +1,62 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Display customer details above new door entry form",
+  "title": "Update quotation format to match reference image with pricing table and PDF export",
   "requirements": [
     {
-      "id": "REQ-3",
-      "summary": "Display read-only customer details section above DoorEntryForm in the main door entry view",
+      "id": "REQ-1",
+      "summary": "Update QuotationView to display unified pricing table with all four coating columns side by side",
       "acceptanceCriteria": [
-        "The customer name and mobile number collected on the CustomerInfoForm screen are visible above the DoorEntryForm on the form view.",
-        "The customer details section is read-only (not editable inline).",
-        "The section is styled consistently with the existing amber/stone warm neutral theme.",
-        "The customer details section remains visible while the user adds door entries."
+        "Table has columns: SR, DOOR SIZE, SQ.FT, SINGLE COATING, DOUBLE COATING, DOUBLE + SAGWAN, LAMINATE",
+        "Each door row shows fractional door size (e.g. 75 5/8\" × 28 5/8\"), sq.ft, and price under each coating column formatted as ₹X,XXX.XX",
+        "A Total row at the bottom sums sq.ft and each coating column total, displayed with a distinct background (e.g. warm beige/amber)",
+        "Column headers use dark brown background with white text matching the reference image style"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/App.tsx",
+          "path": "frontend/src/components/QuotationView.tsx",
           "operation": "modify",
-          "description": "In the 'form' view section of App.tsx (where currentView === 'form'), add a customer details display component or section above the DoorEntryForm component. Pass customerName and customerMobile from state as props to display them read-only. Style the section using Card from shadcn/ui with consistent amber/stone theme spacing and typography. Ensure this section remains visible throughout the door entry process without interfering with the existing three-view navigation logic (customerInfo → form → quotation)."
+          "description": "Replace the current per-coating-type block layout with a unified table structure. Add columns: SR, DOOR SIZE, SQ.FT, SINGLE COATING, DOUBLE COATING, DOUBLE + SAGWAN, LAMINATE. For each door entry, display a single row showing fractional door size (using utility functions from dimensionConversion.ts), calculated sq.ft, and the four coating prices side by side formatted as ₹X,XXX.XX. Add a Total row at the bottom that sums the sq.ft column and each of the four coating price columns. Style the table header with a dark brown background (#3E2723 or similar) and white text. Style the Total row with a warm beige/amber background matching the reference image (e.g. #F5E6D3). Ensure proper number formatting for Indian rupee notation and maintain responsive table layout."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Add Coating Type Summary section below the pricing table showing per-sq.ft rates and grand totals",
+      "acceptanceCriteria": [
+        "Section heading 'Coating Type Summary' is displayed",
+        "Each coating type line shows: label, rate per sq.ft in parentheses, and grand total right-aligned",
+        "All four coating types are listed: Single Coating, Double Coating, Double Coating + Sagwan Patti, Laminate",
+        "Grand totals match the totals from the table above"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/QuotationView.tsx",
+          "operation": "modify",
+          "description": "Below the main pricing table, add a 'Coating Type Summary' section. For each of the four coating types (Single Coating, Double Coating, Double Coating + Sagwan Patti, Laminate), display a line in the format: 'Single Coating (@ ₹185.00/sq.ft): ₹6,706.00'. Use the hard-coded rates from frontend/src/types/door.ts or query results to display the per-sq.ft rate. Calculate the grand total for each coating type by summing all door prices for that coating type (matching the totals from the table columns above). Right-align the grand total amounts. Ensure proper Indian rupee formatting with commas and two decimal places."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Enable PDF export of the quotation with print-friendly layout",
+      "acceptanceCriteria": [
+        "A 'Download PDF' or 'Print' button triggers browser print/PDF export of the quotation",
+        "PDF includes customer name and mobile number at the top",
+        "PDF includes the full door pricing table with all four coating columns and a Total row",
+        "PDF includes the Coating Type Summary section with rates and grand totals",
+        "Buttons and navigation elements are hidden in the print/PDF output via print CSS"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/QuotationView.tsx",
+          "operation": "modify",
+          "description": "Add a 'Download PDF' or 'Print' button that triggers window.print() to open the browser's print dialog for PDF export. Ensure the component displays customer name and mobile number prominently at the top of the quotation. Add a CSS class or inline styles with @media print rules to hide all action buttons (Print, Share, Back) and navigation elements during print/PDF output. Ensure the print layout is clean and professional, with proper page breaks if needed, and that all table content (unified pricing table with four coating columns, Total row, and Coating Type Summary section) is visible and well-formatted in the PDF."
+        },
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Add @media print CSS rules to hide interactive elements (.no-print class or specific button selectors) and optimize the quotation layout for print. Ensure table borders, backgrounds, and text colors are print-friendly. Set appropriate margins and remove unnecessary shadows or interactive UI elements that should not appear in the PDF output."
         }
       ]
     }

@@ -1,36 +1,76 @@
 {
   "kind": "build_request",
-  "title": "Display customer details above new door entry form",
+  "title": "Update quotation format to match reference image with pricing table and PDF export",
+  "projectName": "Door Quotation Calculator",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-3",
-      "text": "In the main door entry view (the 'form' screen in App.tsx), display a read-only customer details section above the DoorEntryForm component, showing the collected customer name and mobile number from state.",
+      "id": "REQ-1",
+      "text": "Update the QuotationView component to display a unified table with columns: SR, DOOR SIZE, SQ.FT, SINGLE COATING, DOUBLE COATING, DOUBLE + SAGWAN, LAMINATE — each row showing all four coating prices side by side for that door, followed by a Total row summing each coating column and the total sq.ft.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-4"
+          "msg-1"
         ],
         "quotes": [
-          "Add customer details above new door entry"
+          "Door coating quotation in this format"
         ]
       },
       "acceptanceCriteria": [
-        "The customer name and mobile number collected on the CustomerInfoForm screen are visible above the DoorEntryForm on the form view.",
-        "The customer details section is read-only (not editable inline).",
-        "The section is styled consistently with the existing amber/stone warm neutral theme.",
-        "The customer details section remains visible while the user adds door entries."
+        "Table has columns: SR, DOOR SIZE, SQ.FT, SINGLE COATING, DOUBLE COATING, DOUBLE + SAGWAN, LAMINATE",
+        "Each door row shows fractional door size (e.g. 75 5/8\" × 28 5/8\"), sq.ft, and price under each coating column formatted as ₹X,XXX.XX",
+        "A Total row at the bottom sums sq.ft and each coating column total, displayed with a distinct background (e.g. warm beige/amber)",
+        "Column headers use dark brown background with white text matching the reference image style"
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Below the main pricing table, display a 'Coating Type Summary' section listing each coating type with its per-sq.ft rate and grand total, in the format: 'Single Coating (@ ₹185.00/sq.ft): ₹6,706.00', one line per coating type.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Door coating quotation in this format"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Section heading 'Coating Type Summary' is displayed",
+        "Each coating type line shows: label, rate per sq.ft in parentheses, and grand total right-aligned",
+        "All four coating types are listed: Single Coating, Double Coating, Double Coating + Sagwan Patti, Laminate",
+        "Grand totals match the totals from the table above"
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Ensure the quotation view can be exported as a PDF. The PDF must include the customer name, mobile number, the full pricing table (SR, DOOR SIZE, SQ.FT, all four coating columns, Total row), and the Coating Type Summary section. The PDF layout must be print-friendly and omit any action buttons (Print, Share, Back).",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Door coating quotation in this format and PDF"
+        ]
+      },
+      "acceptanceCriteria": [
+        "A 'Download PDF' or 'Print' button triggers browser print/PDF export of the quotation",
+        "PDF includes customer name and mobile number at the top",
+        "PDF includes the full door pricing table with all four coating columns and a Total row",
+        "PDF includes the Coating Type Summary section with rates and grand totals",
+        "Buttons and navigation elements are hidden in the print/PDF output via print CSS"
       ]
     }
   ],
   "constraints": [
-    "Do not modify files under frontend/src/hooks/ or frontend/src/components/ui.",
-    "Do not alter the CustomerInfoForm flow or the three-view navigation logic (customerInfo → form → quotation) in App.tsx beyond adding the display section."
+    "Do not modify files under frontend/src/hooks/ or frontend/src/components/ui/",
+    "Preserve existing backend rate storage and query logic in backend/main.mo"
   ],
   "nonGoals": [
-    "Allowing the user to edit customer details from the form/door-entry view.",
-    "Changes to the QuotationView customer info display.",
-    "Backend changes."
+    "Changing how doors are entered or the DoorEntryForm flow",
+    "Adding new coating types beyond the existing four",
+    "Backend schema changes"
   ],
   "imageRequirements": {
     "required": [],

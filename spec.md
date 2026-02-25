@@ -1,11 +1,11 @@
 # Specification
 
 ## Summary
-**Goal:** Display a read-only customer details section (name and mobile number) above the DoorEntryForm on the main door entry screen.
+**Goal:** Update the QuotationView to display a unified pricing table with all four coating types side by side per door, a totals row, a Coating Type Summary section, and PDF export support.
 
 **Planned changes:**
-- Add a read-only customer details section in the form view of App.tsx, above the DoorEntryForm component
-- Show the customer name and mobile number collected from the CustomerInfoForm screen
-- Style the section consistently with the existing amber/stone warm neutral theme
-
-**User-visible outcome:** When a user reaches the door entry form, they can see the customer's name and mobile number displayed above the form, remaining visible while they add door entries.
+- Redesign the QuotationView table with columns: SR, DOOR SIZE, SQ.FT, SINGLE COATING, DOUBLE COATING, DOUBLE + SAGWAN, LAMINATE — each row showing all four coating prices for that door
+- Add a Total row at the bottom summing sq.ft and each coating column, styled with a warm beige/amber background
+- Style column headers with a dark brown background and white text
+- Add a "Coating Type Summary" section below the table listing each coating type with its per-sq.ft rate and grand total
+- Add print/PDF export functionality with print CSS that hides buttons and navigation, and includes customer name, mobile number, the full table, and the summary section

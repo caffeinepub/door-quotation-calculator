@@ -11,7 +11,7 @@ interface CustomKeyboardProps {
 // Row 2:  4   5   6
 // Row 3:  7   8   9
 // Row 4:  /   0   ⌫
-// Row 5:  .  [space]  (empty)
+// Row 5:  .  [SPACE BAR]
 
 export default function CustomKeyboard({ onKeyPress, onBackspace, onDone }: CustomKeyboardProps) {
   return (
@@ -70,12 +70,17 @@ export default function CustomKeyboard({ onKeyPress, onBackspace, onDone }: Cust
           </button>
         </div>
 
-        {/* Row 5: .  (decimal only — space key removed) */}
+        {/* Row 5: .  |  SPACE BAR */}
         <div className="grid grid-cols-3 gap-1.5">
           <KeyButton label="." sublabel="dec" onPress={() => onKeyPress('.')} />
-          {/* empty cells */}
-          <div />
-          <div />
+          {/* Spacebar — spans 2 columns */}
+          <button
+            onPointerDown={(e) => { e.preventDefault(); onKeyPress(' '); }}
+            className="col-span-2 flex flex-col items-center justify-center min-h-[52px] rounded-xl bg-white border border-stone-300 shadow-sm active:bg-amber-50 active:border-amber-400 transition-colors gap-0.5"
+          >
+            <span className="text-sm font-semibold text-stone-600 leading-none tracking-widest">SPACE</span>
+            <span className="text-[9px] text-stone-400 font-medium leading-none">space</span>
+          </button>
         </div>
       </div>
     </div>

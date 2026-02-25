@@ -1,24 +1,48 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-25T14:45:01.609Z",
+  "generatedAt": "2026-02-25T15:38:24.429Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 1,
-    "implemented": 1,
+    "total": 3,
+    "implemented": 3,
     "items": [
       {
-        "id": "REQ-3",
-        "summary": "In the main door entry view (the 'form' screen in App.tsx), display a read-only customer details section above the DoorEntryForm component, showing the collected customer name and mobile number from state.",
+        "id": "REQ-1",
+        "summary": "Update the QuotationView component to display a unified table with columns: SR, DOOR SIZE, SQ.FT, SINGLE COATING, DOUBLE COATING, DOUBLE + SAGWAN, LAMINATE — each row showing all four coating prices side by side for that door, followed by a Total row summing each coating column and the total sq.ft.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/App.tsx"
+          "frontend/src/components/QuotationView.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/App.tsx"
+          "frontend/src/components/QuotationView.tsx"
+        ]
+      },
+      {
+        "id": "REQ-2",
+        "summary": "Below the main pricing table, display a 'Coating Type Summary' section listing each coating type with its per-sq.ft rate and grand total, in the format: 'Single Coating (@ ₹185.00/sq.ft): ₹6,706.00', one line per coating type.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/QuotationView.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/QuotationView.tsx"
+        ]
+      },
+      {
+        "id": "REQ-3",
+        "summary": "Ensure the quotation view can be exported as a PDF. The PDF must include the customer name, mobile number, the full pricing table (SR, DOOR SIZE, SQ.FT, all four coating columns, Total row), and the Coating Type Summary section. The PDF layout must be print-friendly and omit any action buttons (Print, Share, Back).",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/QuotationView.tsx",
+          "frontend/src/index.css"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/QuotationView.tsx",
+          "frontend/src/index.css"
         ]
       }
     ]
@@ -28,7 +52,8 @@
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/App.tsx",
+    "frontend/src/components/QuotationView.tsx",
+    "frontend/src/index.css",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

@@ -1,0 +1,16 @@
+{
+  "frontend/src/App.tsx": "Main app component that now passes a `handleClearDoors` callback (resets door list to empty array) as `onClearDoors` prop to `QuotationView`, enabling full state reset after WhatsApp share.",
+  "frontend/src/types/door.ts": "Defines the DoorEntry interface (no label/coatingType fields) with actualHeightInches, actualWidthInches, catalogueHeight, catalogueWidth, thickness, and quantity; also exports COATING_LABELS, COATING_OPTIONS, COATING_RATES, CATALOGUE, and STANDARD_THICKNESS_MM constants used across the app.",
+  "frontend/src/utils/dimensionConversion.ts": "Utility functions for dimension conversion including the new `parseFractionInput` function that parses both decimal (\"79.25\") and fraction (\"79 1/4\", \"79 3/8\") string inputs into decimal numbers, plus all existing catalogue lookup and formatting helpers.",
+  "frontend/src/utils/whatsappFormatter.ts": "Formats a WhatsApp-ready URL-encoded message from CoatingBlockData; outputs per-door details with all four coating amounts, then a grand total section grouped by coating type; no door label references.",
+  "frontend/src/hooks/useQueries.ts": "React Query hooks for all backend interactions — fetching all rates, getting a specific rate, adding a rate, and updating a rate — with proper cache invalidation.",
+  "frontend/src/components/Header.tsx": "App header with door emoji logo, app title, and subtitle, hidden during print.",
+  "frontend/src/components/Footer.tsx": "App footer with copyright year, caffeine.ai attribution link with UTM params, and a heart icon, hidden during print.",
+  "frontend/src/components/DimensionInput.tsx": "Refactored dimension input component with vertically stacked full-width inputs for height and width, using `parseFractionInput` to accept both decimal and fraction formats, with helper text, inline error messages, and a catalogue size badge.",
+  "frontend/src/components/DoorEntryForm.tsx": "Door entry form with a dark warm brown card (`#2a1a10` background) matching the reference image, vertically stacked dimension inputs, and a full-width \"+ Add Door Size\" button with salmon/terracotta styling.",
+  "frontend/src/components/DoorList.tsx": "Card list of added door entries showing actual size, catalogue size badge, thickness, sq.ft, quantity, and all four coating types with their rates and line totals per card; includes a remove button per entry.",
+  "frontend/src/components/QuotationView.tsx": "Full quotation display with coating blocks and grand total; the WhatsApp share handler now calls `onClearDoors` and `onBack` after sharing to reset the app to a clean state, and a bottom \"Share via WhatsApp & Clear\" button is added.",
+  "frontend/src/components/RateManager.tsx": "Collapsible admin panel for adding and updating backend pricing rates by coating type and standard size, with a table showing all existing rates.",
+  "frontend/src/index.css": "Global styles with warm neutral OKLCH color palette, amber/gold accent tokens, Inter font, and print-specific media query styles for A4 quotation output.",
+  "frontend/tailwind.config.js": "Extended Tailwind config with Inter/Playfair Display fonts, amber color tokens mapped to CSS variables, card shadow, and all standard shadcn/ui theme extensions."
+}

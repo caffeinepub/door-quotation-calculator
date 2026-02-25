@@ -1,0 +1,309 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 11,
+  "summary": "Door Quotation Calculator app with strict catalogue-based size selection. No Door Label/Room field. Manual dimension entry by typing only (Height and Width as single numeric fields in inches, no feet/inches/fraction dropdowns). Auto-converted to catalogue size. Catalogue sizes strictly enforced (heights 72/75/78/80/84, widths 30–42 in 2-inch steps per height). Next-higher catalogue size selected (never smaller). Sq.ft from catalogue size only. Shows ALL four coating types simultaneously for each entry: Single ₹185, Double ₹220, Double Sagwan Patti ₹270, Laminate ₹450 per sq.ft. Output section shows per-coating: Rate, Total Sq.ft, Total Amount, and Grand Total per coating type. Supports multiple door entries. Mobile-first, printable, WhatsApp share ready. Catalogue size highlighted in badge format.",
+  "architectural_notes": [
+    "Catalogue sizes are strictly enumerated: heights [72,75,78,80,84] × widths [30,32,34,36,38,40,42] — not all combinations valid (72/75 max width 36, 78 max width 38, 80/84 max width 42).",
+    "Size selection algorithm: find the smallest catalogue entry where catalogue_height ≥ actual_height AND catalogue_width ≥ actual_width.",
+    "Square feet calculated exclusively from catalogue size: (cat_width × cat_height) / 144.",
+    "Fixed rates: Single=₹185, Double=₹220, Double Sagwan Patti=₹270, Laminate=₹450 per sq.ft.",
+    "No Door Label/Room field — doors are identified only by their dimensions and entry order.",
+    "All four coating types are always shown simultaneously per entry and in the output summary — no per-door coating selection.",
+    "Dimension input is via direct numeric typing only: two plain number inputs (Height in inches, Width in inches). No feet/inches/fraction dropdowns.",
+    "After WhatsApp Share, door entries should also be cleared (in addition to customer name and mobile number)."
+  ],
+  "known_issues": [],
+  "isFixRequest": false,
+  "existing_features": [
+    {
+      "id": "feature-build-a-dimension-input-component-that-accepts-actual-door-height-and-width-in-feet-and-inches-with-1-8-inch-fraction-support-then-auto-converts-the-entered-dimension-to-the-nearest-standard-size-and-displays-the-matched-standard-size-to-the-user",
+      "title": "Build a dimension input component that accepts actual door height and width in feet and inches with 1/8-inch fraction support, then auto-converts the entered dimension to the nearest standard size and displays the matched standard size to the user.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-a-door-entry-form-that-allows-the-user-to-specify-a-door-label-actual-dimensions-with-1-8-inch-fractions-coating-type-single-double-double-sagwanpatti-laminate-and-quantity-support-adding-multiple-doors-to-a-list-with-the-ability-to-remove-individual-entries",
+      "title": "Implement a door entry form that allows the user to specify a door label, actual dimensions with 1/8-inch fractions, coating type (Single, Double, Double Sagwanpatti, Laminate), and quantity. Support adding multiple doors to a list with the ability to remove individual entries.",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-generate-a-formatted-quotation-view-that-shows-each-door-entry-with-its-label-actual-dimensions-matched-standard-size-coating-type-unit-price-quantity-and-line-total-display-subtotals-per-coating-category-and-a-grand-total-at-the-bottom",
+      "title": "Generate a formatted quotation view that shows each door entry with its label, actual dimensions, matched standard size, coating type, unit price, quantity, and line total. Display subtotals per coating category and a grand total at the bottom.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-print-button-that-opens-the-browser-print-dialog-with-the-quotation-formatted-for-a4-paper-using-print-specific-css-that-hides-non-quotation-ui-elements",
+      "title": "Add a Print button that opens the browser print dialog with the quotation formatted for A4 paper using print-specific CSS that hides non-quotation UI elements.",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-share-via-whatsapp-button-that-composes-a-pre-formatted-text-message-summarizing-the-quotation-door-name-size-coating-quantity-price-per-line-grand-total-and-opens-it-in-whatsapp-web-using-the-wa-me-link-scheme",
+      "title": "Add a 'Share via WhatsApp' button that composes a pre-formatted text message summarizing the quotation (door name, size, coating, quantity, price per line, grand total) and opens it in WhatsApp Web using the wa.me link scheme.",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-apply-a-clean-professional-visual-theme-suited-for-a-trade-business-tool-neutral-warm-tones-off-white-background-dark-charcoal-text-amber-gold-accent-clear-typographic-hierarchy-card-based-layout-for-the-door-list-and-quotation-and-consistent-spacing-throughout",
+      "title": "Apply a clean, professional visual theme suited for a trade/business tool: neutral warm tones (off-white background, dark charcoal text, amber/gold accent), clear typographic hierarchy, card-based layout for the door list and quotation, and consistent spacing throughout.",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-the-strict-catalogue-based-size-selection-algorithm-in-frontend-src-utils-dimensionconversion-ts-the-catalogue-must-be-the-exclusive-source-of-valid-sizes-height-72-widths-30-32-34-36-height-75-widths-30-32-34-36-height-78-widths-30-32-34-36-38-height-80-widths-30-32-34-36-38-40-42-height-84-widths-30-32-34-36-38-40-42-given-actual-height-and-width-in-inches-with-1-8-inch-fractions-allowed-select-the-catalogue-entry-where-both-catalogue-height-actual-height-and-catalogue-width-actual-width-among-all-valid-candidates-choose-the-one-with-the-smallest-height-first-then-smallest-width-i-e-the-tightest-next-higher-fit-if-no-catalogue-size-satisfies-both-constraints-the-input-is-out-of-range-never-return-a-size-smaller-than-actual-on-either-dimension-validate-the-following-examples-71-39-80-40-72-35-72-36-78-37-78-38-79-39-80-40-83-41-84-42",
+      "title": "Implement the strict catalogue-based size selection algorithm in `frontend/src/utils/dimensionConversion.ts`. The catalogue must be the exclusive source of valid sizes: HEIGHT 72 → widths [30,32,34,36]; HEIGHT 75 → widths [30,32,34,36]; HEIGHT 78 → widths [30,32,34,36,38]; HEIGHT 80 → widths [30,32,34,36,38,40,42]; HEIGHT 84 → widths [30,32,34,36,38,40,42]. Given actual height and width (in inches, with 1/8-inch fractions allowed), select the catalogue entry where both catalogue height ≥ actual height AND catalogue width ≥ actual width. Among all valid candidates, choose the one with the smallest height first, then smallest width (i.e., the tightest next-higher fit). If no catalogue size satisfies both constraints, the input is out of range. Never return a size smaller than actual on either dimension. Validate the following examples: 71×39 → 80×40, 72×35 → 72×36, 78×37 → 78×38, 79×39 → 80×40, 83×41 → 84×42.",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-frontend-src-types-door-ts-to-reflect-the-exact-catalogue-heights-72-75-78-80-84-and-per-height-width-arrays-as-specified-remove-any-previously-defined-widths-that-are-not-in-the-catalogue-fix-coating-rates-to-exactly-single-coating-185-sq-ft-double-coating-220-sq-ft-double-coating-sagwan-patti-270-sq-ft-laminate-450-sq-ft-ensure-the-coating-type-labels-match-these-names-precisely-throughout-the-app",
+      "title": "Update `frontend/src/types/door.ts` to reflect the exact catalogue: heights [72, 75, 78, 80, 84] and per-height width arrays as specified. Remove any previously defined widths that are not in the catalogue. Fix coating rates to exactly: Single Coating ₹185/sq.ft, Double Coating ₹220/sq.ft, Double Coating Sagwan Patti ₹270/sq.ft, Laminate ₹450/sq.ft. Ensure the coating type labels match these names precisely throughout the app.",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-per-door-display-in-doorlist-tsx-and-quotationview-tsx-to-show-1-actual-size-as-entered-w-h-in-inches-with-fraction-if-applicable-2-catalogue-size-w-h-in-inches-3-thickness-30-mm-fixed-always-displayed-4-square-feet-calculated-as-catalogue-width-catalogue-height-144-rounded-to-two-decimal-places-do-not-show-any-intermediate-rounding-steps-or-manual-rounding-values-only-actual-size-and-catalogue-size-should-be-visible-to-the-user",
+      "title": "Update the per-door display in `DoorList.tsx` and `QuotationView.tsx` to show: (1) Actual Size as entered (W × H in inches with fraction if applicable), (2) Catalogue Size (W × H in inches), (3) Thickness: 30 mm (fixed, always displayed), (4) Square Feet calculated as (catalogue width × catalogue height) ÷ 144 rounded to two decimal places. Do NOT show any intermediate rounding steps or manual rounding values — only Actual Size and Catalogue Size should be visible to the user.",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-customer-details-fields-customer-name-text-input-and-mobile-number-input-at-the-top-of-the-quotation-form-in-app-tsx-or-a-new-customerdetailsform-component-these-fields-must-be-stored-in-react-state-after-the-user-triggers-print-pdf-or-whatsapp-share-automatically-clear-customer-name-and-mobile-number-fields-while-keeping-all-door-entries-intact",
+      "title": "Add Customer Details fields (Customer Name text input and Mobile Number input) at the top of the quotation form in `App.tsx` or a new `CustomerDetailsForm` component. These fields must be stored in React state. After the user triggers Print, PDF, or WhatsApp Share, automatically clear Customer Name and Mobile Number fields while keeping all door entries intact.",
+      "reqIds": [
+        "REQ-11"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-frontend-src-utils-whatsappformatter-ts-to-include-the-customer-name-and-mobile-number-at-the-top-of-the-whatsapp-message-each-door-line-must-show-door-label-actual-size-catalogue-size-coating-type-quantity-unit-price-sq-ft-sq-ft-and-line-total-include-subtotals-per-coating-type-and-grand-total-at-the-end",
+      "title": "Update `frontend/src/utils/whatsappFormatter.ts` to include the customer name and mobile number at the top of the WhatsApp message. Each door line must show: door label, actual size, catalogue size, coating type, quantity, unit price (₹/sq.ft), sq.ft, and line total. Include subtotals per coating type and grand total at the end.",
+      "reqIds": [
+        "REQ-12"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-the-entire-ui-is-mobile-first-and-optimized-for-android-browser-usage-all-inputs-feet-inches-fraction-selects-coating-dropdown-quantity-must-be-large-enough-for-touch-interaction-minimum-44px-tap-targets-the-door-entry-form-door-list-cards-and-quotation-view-must-stack-vertically-in-a-single-column-layout-on-small-screens-buttons-add-door-print-share-must-be-full-width-on-mobile",
+      "title": "Ensure the entire UI is mobile-first and optimized for Android browser usage. All inputs (feet, inches, fraction selects, coating dropdown, quantity) must be large enough for touch interaction (minimum 44px tap targets). The door entry form, door list cards, and quotation view must stack vertically in a single-column layout on small screens. Buttons (Add Door, Print, Share) must be full-width on mobile.",
+      "reqIds": [
+        "REQ-14"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-remove-the-ratemanager-component-from-the-visible-ui-or-restrict-it-to-an-admin-only-collapsed-section-since-rates-are-now-fixed-constants-fetched-from-backend-as-stable-values-the-end-user-flow-should-not-expose-rate-editing-controls-during-normal-quotation-creation",
+      "title": "Remove the `RateManager` component from the visible UI (or restrict it to an admin-only collapsed section). Since rates are now fixed constants (fetched from backend as stable values), the end-user flow should not expose rate editing controls during normal quotation creation.",
+      "reqIds": [
+        "REQ-15"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-remove-the-door-label-room-field-entirely-from-doorentryform-tsx-and-all-related-state-in-app-tsx-the-doorentry-type-in-frontend-src-types-door-ts-must-no-longer-include-a-label-or-room-field-no-door-label-should-appear-anywhere-in-the-ui-quotation-view-print-output-or-whatsapp-message",
+      "title": "Remove the Door Label / Room field entirely from `DoorEntryForm.tsx` and all related state in `App.tsx`. The `DoorEntry` type in `frontend/src/types/door.ts` must no longer include a label or room field. No door label should appear anywhere in the UI, quotation view, print output, or WhatsApp message.",
+      "reqIds": [
+        "REQ-16"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-refactor-doorentryform-tsx-so-the-input-section-contains-only-1-height-in-feet-inches-fraction-1-8-steps-2-width-in-feet-inches-fraction-1-8-steps-and-3-a-quantity-field-remove-the-coating-type-dropdown-coating-type-is-no-longer-a-per-entry-selection-on-add-door-store-the-entry-with-actual-dimensions-in-inches-resolved-catalogue-size-thickness-30mm-and-quantity-no-coating-type-is-stored-per-door-entry",
+      "title": "Refactor `DoorEntryForm.tsx` so the input section contains only: (1) Height in Feet + Inches + Fraction (1/8 steps), (2) Width in Feet + Inches + Fraction (1/8 steps), and (3) a Quantity field. Remove the coating type dropdown — coating type is no longer a per-entry selection. On 'Add Door', store the entry with actual dimensions (in inches), resolved catalogue size, thickness 30mm, and quantity. No coating type is stored per door entry.",
+      "reqIds": [
+        "REQ-17"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-frontend-src-types-door-ts-to-remove-the-coating-type-from-the-doorentry-interface-each-doorentry-must-contain-actualheightinches-actualwidthinches-catalogueheight-cataloguewidth-thickness-fixed-30-and-quantity-the-four-coating-rates-single-185-double-220-double-sagwan-patti-270-laminate-450-remain-as-constants",
+      "title": "Update `frontend/src/types/door.ts` to remove the coating type from the `DoorEntry` interface. Each `DoorEntry` must contain: actualHeightInches, actualWidthInches, catalogueHeight, catalogueWidth, thickness (fixed 30), and quantity. The four coating rates (Single ₹185, Double ₹220, Double Sagwan Patti ₹270, Laminate ₹450) remain as constants.",
+      "reqIds": [
+        "REQ-18"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-doorlist-tsx-to-display-each-door-entry-card-with-1-actual-size-w-h-in-inches-with-fraction-if-applicable-2-catalogue-size-w-h-in-inches-highlighted-in-a-badge-3-thickness-30-mm-4-square-feet-cataloguewidth-catalogueheight-144-rounded-to-2-decimal-places-5-quantity-and-6-for-all-four-coating-types-simultaneously-show-coating-name-rate-sq-ft-sq-ft-and-line-total-sq-ft-rate-quantity-do-not-show-a-single-coating-always-show-all-four",
+      "title": "Update `DoorList.tsx` to display each door entry card with: (1) Actual Size (W × H in inches, with fraction if applicable), (2) Catalogue Size (W × H in inches) highlighted in a badge, (3) Thickness: 30 mm, (4) Square Feet = (catalogueWidth × catalogueHeight) ÷ 144 rounded to 2 decimal places, (5) Quantity, and (6) for ALL four coating types simultaneously — show coating name, rate (₹/sq.ft), sq.ft, and line total (sq.ft × rate × quantity). Do not show a single coating — always show all four.",
+      "reqIds": [
+        "REQ-19"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-quotationview-tsx-to-show-the-output-section-grouped-by-coating-type-for-each-of-the-four-coating-types-single-coating-185-double-coating-220-double-coating-sagwan-patti-270-laminate-450-display-1-rate-per-sq-ft-2-total-square-feet-sum-of-sq-ft-qty-across-all-entries-3-total-amount-then-show-a-grand-total-for-each-coating-type-separately-each-door-entry-detail-row-in-the-quotation-must-also-show-actual-size-catalogue-size-thickness-30mm-sq-ft-quantity-and-per-coating-amount-no-label-field",
+      "title": "Update `QuotationView.tsx` to show the output section grouped by coating type. For each of the four coating types (Single Coating ₹185, Double Coating ₹220, Double Coating Sagwan Patti ₹270, Laminate ₹450), display: (1) Rate per sq.ft, (2) Total Square Feet (sum of sq.ft × qty across all entries), (3) Total Amount. Then show a Grand Total for each coating type separately. Each door entry detail row in the quotation must also show Actual Size, Catalogue Size, Thickness 30mm, sq.ft, quantity, and per-coating amount — no label field.",
+      "reqIds": [
+        "REQ-20"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-frontend-src-utils-whatsappformatter-ts-to-remove-all-references-to-door-label-each-door-line-in-the-whatsapp-message-must-show-actual-size-catalogue-size-quantity-sq-ft-and-then-for-each-of-the-four-coating-types-coating-name-rate-and-line-total-include-the-four-coating-type-subtotals-and-grand-totals-at-the-end-customer-name-and-mobile-number-remain-at-the-top-of-the-message",
+      "title": "Update `frontend/src/utils/whatsappFormatter.ts` to remove all references to door label. Each door line in the WhatsApp message must show: Actual Size, Catalogue Size, quantity, sq.ft, and then for each of the four coating types: coating name, rate, and line total. Include the four coating-type subtotals and grand totals at the end. Customer name and mobile number remain at the top of the message.",
+      "reqIds": [
+        "REQ-21"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-refactor-doorentryform-tsx-and-dimensioninput-tsx-to-replace-all-dropdown-select-based-dimension-inputs-feet-dropdown-inches-dropdown-fraction-dropdown-for-both-height-and-width-with-two-plain-numeric-text-input-fields-one-labeled-height-inches-and-one-labeled-width-inches-users-must-type-the-dimension-directly-as-a-decimal-number-e-g-78-80-5-remove-the-feet-inches-fraction-multi-column-layout-entirely-the-two-inputs-must-be-displayed-side-by-side-in-a-two-column-grid-height-width-on-all-screen-sizes-each-input-must-have-a-minimum-height-of-44px-for-touch-usability-on-value-change-the-entered-inches-value-is-passed-directly-to-the-catalogue-lookup-findcataloguesize-to-resolve-and-display-the-matching-catalogue-size-badge-below-the-inputs-exactly-as-before",
+      "title": "Refactor `DoorEntryForm.tsx` and `DimensionInput.tsx` to replace all dropdown/select-based dimension inputs (feet dropdown, inches dropdown, fraction dropdown) for both Height and Width with two plain numeric text input fields — one labeled 'Height (inches)' and one labeled 'Width (inches)'. Users must type the dimension directly as a decimal number (e.g., 78, 80.5). Remove the feet/inches/fraction multi-column layout entirely. The two inputs must be displayed side by side in a two-column grid (Height | Width) on all screen sizes. Each input must have a minimum height of 44px for touch usability. On value change, the entered inches value is passed directly to the catalogue lookup (findCatalogueSize) to resolve and display the matching catalogue size badge below the inputs, exactly as before.",
+      "reqIds": [
+        "REQ-23"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-refactor-doorentryform-tsx-and-dimensioninput-tsx-to-accept-dimension-input-as-a-free-text-string-that-supports-both-decimal-format-e-g-79-25-and-fraction-format-e-g-79-1-4-79-3-8-each-input-field-must-be-full-width-stacked-vertically-height-first-then-width-not-side-by-side-with-label-door-height-inches-and-door-width-inches-respectively-placeholder-text-must-show-79-1-4-or-79-25-for-height-and-30-1-4-or-30-25-for-width-a-helper-text-line-below-each-input-must-read-enter-as-decimal-79-25-or-fraction-79-1-4-79-3-8-the-parser-must-convert-fraction-strings-whole-numerator-denominator-e-g-79-1-4-79-3-8-into-a-decimal-inches-value-before-passing-to-findcataloguesize-the-catalogue-size-badge-must-still-appear-below-the-inputs-as-before-the-button-label-must-be-add-door-size-the-form-card-must-use-a-dark-warm-brown-background-consistent-with-the-image-reference",
+      "title": "Refactor `DoorEntryForm.tsx` and `DimensionInput.tsx` to accept dimension input as a free-text string that supports both decimal format (e.g., '79.25') and fraction format (e.g., '79 1/4', '79 3/8'). Each input field must be full-width, stacked vertically (Height first, then Width — not side by side), with label 'Door Height (inches)' and 'Door Width (inches)' respectively. Placeholder text must show '79 1/4 or 79.25' for height and '30 1/4 or 30.25' for width. A helper text line below each input must read 'Enter as decimal (79.25) or fraction (79 1/4, 79 3/8)'. The parser must convert fraction strings (whole + numerator/denominator, e.g., '79 1/4', '79 3/8') into a decimal inches value before passing to `findCatalogueSize`. The catalogue size badge must still appear below the inputs as before. The button label must be '+ Add Door Size'. The form card must use a dark warm brown background consistent with the image reference.",
+      "reqIds": [
+        "REQ-24"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-after-the-user-successfully-shares-the-quotation-via-whatsapp-i-e-the-whatsapp-share-action-is-triggered-clear-all-door-entries-in-the-app-state-reset-the-door-list-to-empty-in-addition-to-clearing-customer-name-and-mobile-number-fields-the-door-entry-form-must-be-ready-for-fresh-input-after-share",
+      "title": "After the user successfully shares the quotation via WhatsApp (i.e., the WhatsApp share action is triggered), clear all door entries in the app state (reset the door list to empty) in addition to clearing Customer Name and Mobile Number fields. The door entry form must be ready for fresh input after share.",
+      "reqIds": [
+        "REQ-25"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Accept actual door dimensions with 1/8-inch fractions and auto-convert to standard sizes",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Support multiple door entries with coating options: Single, Double, Double Sagwanpatti, Laminate",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Generate formatted quotation with per-door amounts, subtotals, and grand total",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Print and WhatsApp share functionality for the quotation",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Create a backend actor that stores door pricing data keyed by coating type (Single, Double, Double Sagwanpatti, Laminate) and standard door sizes. Provide query and update functions to manage pricing entries and retrieve price for a given size and coating combination.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "Strict catalogue-based size selection: given actual dimensions, select next-higher available size from fixed catalogue (heights 72/75/78/80/84, widths 30–42 in 2-inch steps); never select smaller size than actual",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-7",
+      "summary": "Display per door: Actual Size, Catalogue Size, Thickness 30mm, Square Feet (catalogue width × height ÷ 144)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-8",
+      "summary": "Customer details fields (Name, Mobile Number) that auto-clear after Print/PDF/Share while keeping door entries",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-9",
+      "summary": "Mobile-first UI optimized for Android door manufacturing shop usage",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-15",
+      "summary": "Update the backend actor in `backend/main.mo` to use the exact catalogue-based rate structure. Remove any dynamic per-size rate storage. Instead, store only four fixed coating rates (Single, Double, DoubleSagwanPatti, Laminate) as stable variables. Expose query functions to retrieve the rate for a given coating type. The backend no longer needs a (StandardSize, CoatingType) composite key — rates are coating-type only.",
+      "reqIds": [
+        "REQ-13"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-16",
+      "summary": "Remove Door Label/Room field from the door entry form entirely",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-17",
+      "summary": "Show quotation for ALL four coating types simultaneously per door entry and in output section (not user-selected single coating)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-18",
+      "summary": "Output section per coating type: show Rate, Total Square Feet, Total Amount, and Grand Total per coating type separately",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-19",
+      "summary": "Highlight catalogue size in badge format in the UI",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-26",
+      "summary": "Ensure `App.tsx` manages door entry state using the updated `DoorEntry` type (no coatingType field). The view flow remains: entry form → door list → quotation view. Customer details (name, mobile) auto-clear after Print or WhatsApp Share while door entries remain. The admin RateManager panel stays collapsed and hidden from the normal user flow.",
+      "reqIds": [
+        "REQ-22"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-27",
+      "summary": "Replace the Height and Width inputs (Feet + Inches + Fraction dropdowns) with simple single typing fields — one for Height (in inches) and one for Width (in inches). Users type the dimension directly as a number.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-28",
+      "summary": "Display door entry form/list UI matching image reference (exact layout as shown by user). Support fractional dimension input. Clear door entries after sharing via WhatsApp.",
+      "reqIds": [],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "Door Quotation Calculator",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

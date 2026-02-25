@@ -1,0 +1,66 @@
+{
+  "kind": "build_request",
+  "title": "Support fractional dimension input and clear door entries after WhatsApp share",
+  "projectName": "Door Quotation Calculator",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-24",
+      "text": "Refactor `DoorEntryForm.tsx` and `DimensionInput.tsx` to accept dimension input as a free-text string that supports both decimal format (e.g., '79.25') and fraction format (e.g., '79 1/4', '79 3/8'). Each input field must be full-width, stacked vertically (Height first, then Width — not side by side), with label 'Door Height (inches)' and 'Door Width (inches)' respectively. Placeholder text must show '79 1/4 or 79.25' for height and '30 1/4 or 30.25' for width. A helper text line below each input must read 'Enter as decimal (79.25) or fraction (79 1/4, 79 3/8)'. The parser must convert fraction strings (whole + numerator/denominator, e.g., '79 1/4', '79 3/8') into a decimal inches value before passing to `findCatalogueSize`. The catalogue size badge must still appear below the inputs as before. The button label must be '+ Add Door Size'. The form card must use a dark warm brown background consistent with the image reference.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "Display like this image fraction can be added"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Height input accepts '79 1/4', '79 3/8', '79.25' and correctly resolves each to the same decimal value before catalogue lookup",
+        "Width input accepts '30 1/4', '30 3/8', '30.25' and correctly resolves to decimal before catalogue lookup",
+        "Placeholder text on height input reads '79 1/4 or 79.25'",
+        "Placeholder text on width input reads '30 1/4 or 30.25'",
+        "Helper text below each input reads 'Enter as decimal (79.25) or fraction (79 1/4, 79 3/8)'",
+        "Inputs are stacked vertically (height above width), each full-width",
+        "Submit button is labeled '+ Add Door Size' and is full-width",
+        "Catalogue size badge still resolves and displays correctly after input",
+        "Invalid or unparseable input shows an appropriate error state"
+      ]
+    },
+    {
+      "id": "REQ-25",
+      "text": "After the user successfully shares the quotation via WhatsApp (i.e., the WhatsApp share action is triggered), clear all door entries in the app state (reset the door list to empty) in addition to clearing Customer Name and Mobile Number fields. The door entry form must be ready for fresh input after share.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "clear door after sharing in WhatsApp"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Triggering the WhatsApp Share button clears all door entries from the list",
+        "Customer Name and Mobile Number fields are also cleared after share",
+        "The door entry form is in a clean, empty state ready for new input after share",
+        "No door entries remain visible in the door list after sharing"
+      ]
+    }
+  ],
+  "constraints": [
+    "Fraction parsing must support 1/8-inch increments (1/8, 1/4, 3/8, 1/2, 5/8, 3/4, 7/8)",
+    "Catalogue lookup logic in dimensionConversion.ts must not be changed — only the input parsing layer changes",
+    "Do not modify any files under frontend/src/hooks/ or frontend/src/components/ui"
+  ],
+  "nonGoals": [
+    "Adding dropdown or stepper-based fraction selectors",
+    "Changing the catalogue sizes or coating rates",
+    "Changing the QuotationView layout or WhatsApp message format beyond clearing entries",
+    "Any backend changes"
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  }
+}

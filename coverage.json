@@ -1,0 +1,58 @@
+{
+  "kind": "coverage_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-25T12:37:43.698Z",
+  "sources": {
+    "buildRequest": true,
+    "implementationPlan": true
+  },
+  "requirements": {
+    "total": 2,
+    "implemented": 2,
+    "items": [
+      {
+        "id": "REQ-24",
+        "summary": "Refactor `DoorEntryForm.tsx` and `DimensionInput.tsx` to accept dimension input as a free-text string that supports both decimal format (e.g., '79.25') and fraction format (e.g., '79 1/4', '79 3/8'). Each input field must be full-width, stacked vertically (Height first, then Width — not side by side), with label 'Door Height (inches)' and 'Door Width (inches)' respectively. Placeholder text must show '79 1/4 or 79.25' for height and '30 1/4 or 30.25' for width. A helper text line below each input must read 'Enter as decimal (79.25) or fraction (79 1/4, 79 3/8)'. The parser must convert fraction strings (whole + numerator/denominator, e.g., '79 1/4', '79 3/8') into a decimal inches value before passing to `findCatalogueSize`. The catalogue size badge must still appear below the inputs as before. The button label must be '+ Add Door Size'. The form card must use a dark warm brown background consistent with the image reference.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/utils/dimensionConversion.ts",
+          "frontend/src/components/DimensionInput.tsx",
+          "frontend/src/components/DoorEntryForm.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/utils/dimensionConversion.ts",
+          "frontend/src/components/DimensionInput.tsx",
+          "frontend/src/components/DoorEntryForm.tsx"
+        ]
+      },
+      {
+        "id": "REQ-25",
+        "summary": "After the user successfully shares the quotation via WhatsApp (i.e., the WhatsApp share action is triggered), clear all door entries in the app state (reset the door list to empty) in addition to clearing Customer Name and Mobile Number fields. The door entry form must be ready for fresh input after share.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/QuotationView.tsx",
+          "frontend/src/App.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/QuotationView.tsx",
+          "frontend/src/App.tsx"
+        ]
+      }
+    ]
+  },
+  "changedFiles": [
+    "build-request.json",
+    "feature_evidence.json",
+    "frontend-file-summaries.txt",
+    "frontend-implementation-plan.json",
+    "frontend/src/App.tsx",
+    "frontend/src/components/DimensionInput.tsx",
+    "frontend/src/components/DoorEntryForm.tsx",
+    "frontend/src/components/QuotationView.tsx",
+    "frontend/src/utils/dimensionConversion.ts",
+    "project_state.json",
+    "scratch/component-selection.json",
+    "spec.md",
+    "spec_vs_diff_report.json"
+  ]
+}

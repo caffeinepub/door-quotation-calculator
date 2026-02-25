@@ -3,20 +3,27 @@ import { Toaster } from '@/components/ui/sonner';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import CustomerInfoForm from './components/CustomerInfoForm';
 import DoorEntryForm from './components/DoorEntryForm';
 import DoorList from './components/DoorList';
 import QuotationView from './components/QuotationView';
 import RateManager from './components/RateManager';
 import { type DoorEntry } from './types/door';
 
-type AppView = 'form' | 'quotation';
+type AppView = 'customerInfo' | 'form' | 'quotation';
 
 export default function App() {
   const [doors, setDoors] = useState<DoorEntry[]>([]);
-  const [view, setView] = useState<AppView>('form');
+  const [view, setView] = useState<AppView>('customerInfo');
   const [customerName, setCustomerName] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
   const [showAdmin, setShowAdmin] = useState(false);
+
+  const handleCustomerInfoSubmit = (name: string, mobile: string) => {
+    setCustomerName(name);
+    setMobileNumber(mobile);
+    setView('form');
+  };
 
   const handleAddDoor = (door: DoorEntry) => {
     setDoors(prev => [...prev, door]);
@@ -36,30 +43,37 @@ export default function App() {
 
   const handleClearDoors = () => {
     setDoors([]);
+    setCustomerName('');
+    setMobileNumber('');
+    setView('customerInfo');
   };
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
       <main className="flex-1 w-full max-w-3xl mx-auto px-3 sm:px-6 py-6">
-        {view === 'form' ? (
+        {view === 'customerInfo' ? (
+          <CustomerInfoForm onSubmit={handleCustomerInfoSubmit} />
+        ) : view === 'form' ? (
           <div className="space-y-5">
             <div>
               <h2 className="text-xl sm:text-2xl font-bold text-foreground mb-1">Door Quotation</h2>
-              <p className="text-muted-foreground text-sm">Enter customer details and door dimensions to build your quotation.</p>
+              <p className="text-muted-foreground text-sm">
+                Customer: <span className="font-medium text-foreground">{customerName}</span>
+                {mobileNumber && (
+                  <> &nbsp;·&nbsp; <span className="font-medium text-foreground">{mobileNumber}</span></>
+                )}
+              </p>
             </div>
 
-            <DoorEntryForm
-              onAddDoor={handleAddDoor}
-              customerName={customerName}
-              setCustomerName={setCustomerName}
-              mobileNumber={mobileNumber}
-              setMobileNumber={setMobileNumber}
-            />
+            <DoorEntryForm onAddDoor={handleAddDoor} />
 
             {doors.length > 0 && (
               <>
-                <DoorList doors={doors} onRemoveDoor={handleRemoveDoor} />
+                <DoorList
+                  doors={doors}
+                  onRemoveDoor={handleRemoveDoor}
+                />
                 <button
                   onClick={handleGenerateQuotation}
                   className="w-full py-3.5 rounded-lg font-semibold text-base bg-amber text-amber-foreground hover:bg-amber-hover transition-colors shadow-md min-h-[48px]"

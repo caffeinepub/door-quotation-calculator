@@ -22,7 +22,6 @@ export function parseFractionInput(input: string): number {
   }
 
   // Try fraction format: "79 1/4", "79 3/8", "1/4", "3/8", etc.
-  // Pattern: optional whole number, then fraction numerator/denominator
   const fractionMatch = trimmed.match(/^(\d+)?\s*(\d+)\s*\/\s*(\d+)$/);
   if (fractionMatch) {
     const whole = fractionMatch[1] ? parseInt(fractionMatch[1], 10) : 0;
@@ -31,108 +30,92 @@ export function parseFractionInput(input: string): number {
 
     if (denominator === 0) return NaN;
 
-    const fractionValue = numerator / denominator;
-    // Validate it's a reasonable fraction (0 < fraction < 1)
-    if (fractionValue <= 0 || fractionValue >= 1) return NaN;
-
-    const total = whole + fractionValue;
-    return total > 0 ? total : NaN;
+    const val = whole + numerator / denominator;
+    return val > 0 ? val : NaN;
   }
 
   return NaN;
 }
 
 /**
- * Strict catalogue-based size selection.
- * Given actual height and width in inches (decimals allowed),
- * finds the catalogue entry where:
- *   - catalogue_height >= actual_height
- *   - catalogue_width >= actual_width
- * Selects the one with smallest height first, then smallest width.
- * Returns null if no valid candidate exists.
+ * Format a decimal inches value as a fraction string (e.g. 75.625 → "75 5/8").
+ * Rounds to nearest 1/8 inch. Returns whole number string if no fraction part.
+ */
+export function formatInchesAsFraction(inches: number): string {
+  const whole = Math.floor(inches);
+  const remainder = inches - whole;
+
+  // Round to nearest 1/8
+  const eighths = Math.round(remainder * 8);
+
+  if (eighths === 0) return `${whole}`;
+  if (eighths === 8) return `${whole + 1}`;
+
+  // Simplify the fraction
+  const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b));
+  const g = gcd(eighths, 8);
+  const num = eighths / g;
+  const den = 8 / g;
+
+  return `${whole} ${num}/${den}`;
+}
+
+/**
+ * Format actual door dimensions (height × width) as a display string.
+ * e.g. actualHeightInches=75.625, actualWidthInches=28.625 → '75 5/8 × 28 5/8"'
+ */
+export function formatActualSize(actualHeightInches: number, actualWidthInches: number): string {
+  const h = formatInchesAsFraction(actualHeightInches);
+  const w = formatInchesAsFraction(actualWidthInches);
+  return `${h} × ${w}"`;
+}
+
+/**
+ * Find the nearest catalogue size for given actual dimensions using round-UP logic.
+ *
+ * Algorithm:
+ * 1. Sort catalogue entries by height ascending.
+ * 2. For each entry whose height >= actualHeightInches (starting from smallest):
+ *    a. Find the smallest width in that entry >= actualWidthInches.
+ *    b. If found, return {height, width} — this is the closest round-up match.
+ * 3. If no entry satisfies both constraints, return null (truly out of range).
+ *
+ * This ensures width=37, height=72 resolves to height=78, width=38 instead of
+ * showing "Out of catalogue range".
+ *
+ * Returns an object with the matched catalogue dimensions and a `wasRounded` flag.
  */
 export function findCatalogueSize(
   actualHeightInches: number,
   actualWidthInches: number
-): { height: number; width: number } | null {
-  const candidates: { height: number; width: number }[] = [];
+): { height: number; width: number; wasRounded: boolean } | null {
+  // Sort catalogue entries by height ascending
+  const sortedEntries = [...CATALOGUE].sort((a, b) => a.height - b.height);
 
-  for (const entry of CATALOGUE) {
-    if (entry.height >= actualHeightInches) {
-      for (const w of entry.widths) {
-        if (w >= actualWidthInches) {
-          candidates.push({ height: entry.height, width: w });
-        }
-      }
+  for (const entry of sortedEntries) {
+    // Skip entries whose height is less than the actual height
+    if (entry.height < actualHeightInches) continue;
+
+    // Find the smallest width in this entry that is >= actualWidthInches
+    const sortedWidths = [...entry.widths].sort((a, b) => a - b);
+    const matchedWidth = sortedWidths.find(w => w >= actualWidthInches) ?? null;
+
+    if (matchedWidth !== null) {
+      const wasRounded =
+        entry.height !== actualHeightInches || matchedWidth !== actualWidthInches;
+      return { height: entry.height, width: matchedWidth, wasRounded };
     }
+    // If this height entry has no wide-enough width, continue to next (taller) entry
+    // which may have wider widths available
   }
 
-  if (candidates.length === 0) return null;
-
-  // Sort by height first, then width — pick the smallest valid combination
-  candidates.sort((a, b) => a.height !== b.height ? a.height - b.height : a.width - b.width);
-  return candidates[0];
+  // No catalogue entry can accommodate these dimensions
+  return null;
 }
 
-/** Get the catalogue size for a given DoorDimension pair */
-export function getCatalogueSize(
-  heightDim: DoorDimension,
-  widthDim: DoorDimension
-): { height: number; width: number } | null {
-  const actualH = dimensionToInches(heightDim);
-  const actualW = dimensionToInches(widthDim);
-  return findCatalogueSize(actualH, actualW);
-}
-
-/** Calculate square feet from catalogue dimensions */
-export function calcSquareFeet(catalogueHeightInches: number, catalogueWidthInches: number): number {
-  return (catalogueWidthInches * catalogueHeightInches) / 144;
-}
-
-/** Format total inches as a simple inches string, e.g. 72 → 72" */
-export function inchesToString(totalInches: number): string {
-  return `${totalInches}"`;
-}
-
-/** Format total inches as feet and inches string, e.g. 72 → 6'0" */
-export function inchesToFeetString(totalInches: number): string {
-  const feet = Math.floor(totalInches / 12);
-  const inches = totalInches % 12;
-  return `${feet}'${inches}"`;
-}
-
-/** Format a DoorDimension as total inches with optional fraction */
-export function formatDimensionInches(dim: DoorDimension): string {
-  const total = dimensionToInches(dim);
-  // Display as decimal if fractional, else as integer
-  if (dim.fraction > 0) {
-    return `${total.toFixed(3).replace(/\.?0+$/, '')}"`;
-  }
-  return `${dim.feet * 12 + dim.inches}"`;
-}
-
-/** Format actual size as W" × H" */
-export function formatActualSize(heightDim: DoorDimension, widthDim: DoorDimension): string {
-  return `${formatDimensionInches(widthDim)} × ${formatDimensionInches(heightDim)}`;
-}
-
-/** Format catalogue size as W" × H" */
-export function formatCatalogueSize(heightInches: number, widthInches: number): string {
-  return `${widthInches}" × ${heightInches}"`;
-}
-
-/** Legacy: round up to nearest standard from a sorted list */
-export function roundUpToStandard(totalInches: number, standards: number[]): number {
-  for (const s of standards) {
-    if (totalInches <= s) return s;
-  }
-  return standards[standards.length - 1];
-}
-
-/** Legacy: format a DoorDimension as a readable string */
-export function formatDimension(dim: DoorDimension): string {
-  if (dim.fraction > 0) {
-    return `${dim.feet}'${dim.inches} ${dim.fraction}/8"`;
-  }
-  return `${dim.feet}'${dim.inches}"`;
+/**
+ * Calculate square feet from catalogue dimensions (in inches).
+ */
+export function calcSquareFeet(heightInches: number, widthInches: number): number {
+  return (heightInches * widthInches) / 144;
 }

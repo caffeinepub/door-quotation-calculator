@@ -1,108 +1,91 @@
-import { Trash2, DoorOpen } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { type DoorEntry, COATING_LABELS, COATING_RATES, STANDARD_THICKNESS_MM } from '../types/door';
+import { Card, CardContent } from '@/components/ui/card';
+import { type DoorEntry, COATING_RATES } from '../types/door';
 import { CoatingType } from '../backend';
-import { calcSquareFeet } from '../utils/dimensionConversion';
+import { calcSquareFeet, formatActualSize } from '../utils/dimensionConversion';
 
 interface DoorListProps {
   doors: DoorEntry[];
   onRemoveDoor: (id: string) => void;
 }
 
-const COATING_ORDER: CoatingType[] = [
-  CoatingType.single,
-  CoatingType.double_,
-  CoatingType.doubleSagwanpatti,
-  CoatingType.laminate,
-];
-
-function formatInches(val: number): string {
-  if (val % 1 === 0) return `${val}"`;
-  return `${val.toFixed(3).replace(/\.?0+$/, '')}"`;
-}
-
 export default function DoorList({ doors, onRemoveDoor }: DoorListProps) {
+  if (doors.length === 0) return null;
+
   return (
-    <Card className="border-border shadow-sm">
-      <CardHeader className="pb-3">
-        <CardTitle className="text-lg font-semibold text-foreground flex items-center gap-2">
-          <DoorOpen className="w-5 h-5 text-amber-color" />
-          Added Doors
-          <Badge variant="secondary" className="ml-1 text-xs">{doors.length}</Badge>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          {doors.map((door, idx) => {
-            const sqFt = calcSquareFeet(door.catalogueHeight, door.catalogueWidth);
+    <Card className="border border-border shadow-sm bg-card">
+      <CardContent className="pt-5 pb-4">
+        {/* Section heading */}
+        <div className="mb-4">
+          <h2 className="text-2xl font-bold text-foreground">Door Entries</h2>
+          <p className="text-sm text-muted-foreground mt-0.5">
+            {doors.length} door {doors.length === 1 ? 'entry' : 'entries'} added
+          </p>
+        </div>
 
-            return (
-              <div
-                key={door.id}
-                className="rounded-lg border border-border bg-muted/30 overflow-hidden"
-              >
-                {/* Card header row */}
-                <div className="flex items-center justify-between gap-2 px-3 py-2.5 bg-muted/50 border-b border-border">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-amber/20 text-amber-dark text-xs font-bold flex items-center justify-center border border-amber/30">
-                      {idx + 1}
-                    </span>
-                    {/* Actual size */}
-                    <span className="text-xs text-muted-foreground">
-                      Actual: <span className="font-medium text-foreground">{formatInches(door.actualWidthInches)} × {formatInches(door.actualHeightInches)}</span>
-                    </span>
-                    <span className="text-muted-foreground text-xs">→</span>
-                    {/* Catalogue size badge */}
-                    <Badge className="bg-amber/20 text-amber-dark border border-amber/40 text-xs font-semibold px-2 py-0.5 rounded-full">
-                      {door.catalogueWidth}" × {door.catalogueHeight}"
-                    </Badge>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => onRemoveDoor(door.id)}
-                    className="flex-shrink-0 h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
-                    aria-label="Remove door"
+        {/* Horizontally scrollable table */}
+        <div className="overflow-x-auto -mx-1">
+          <table className="w-full min-w-[480px] text-sm">
+            <thead>
+              <tr className="border-b border-amber-200">
+                <th className="text-left py-2 px-2 font-semibold text-muted-foreground text-xs w-8">Sr</th>
+                <th className="text-left py-2 px-2 font-semibold text-muted-foreground text-xs">Size</th>
+                <th className="text-right py-2 px-2 font-semibold text-muted-foreground text-xs">Single</th>
+                <th className="text-right py-2 px-2 font-semibold text-muted-foreground text-xs">Double</th>
+                <th className="text-right py-2 px-2 font-semibold text-muted-foreground text-xs">D+Sag</th>
+                <th className="text-right py-2 px-2 font-semibold text-muted-foreground text-xs">Lam</th>
+                <th className="text-right py-2 px-2 font-semibold text-muted-foreground text-xs">Sq.Ft</th>
+                <th className="w-8"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {doors.map((door, idx) => {
+                const sqFt = calcSquareFeet(door.catalogueHeight, door.catalogueWidth);
+                const singleTotal = sqFt * COATING_RATES[CoatingType.single] * door.quantity;
+                const doubleTotal = sqFt * COATING_RATES[CoatingType.double_] * door.quantity;
+                const dSagTotal = sqFt * COATING_RATES[CoatingType.doubleSagwanpatti] * door.quantity;
+                const lamTotal = sqFt * COATING_RATES[CoatingType.laminate] * door.quantity;
+                const sizeLabel = formatActualSize(door.actualHeightInches, door.actualWidthInches);
+
+                return (
+                  <tr
+                    key={door.id}
+                    className="border-b border-amber-100 last:border-b-0 hover:bg-amber-50/40 transition-colors"
                   >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </Button>
-                </div>
-
-                {/* Details */}
-                <div className="px-3 py-2.5 space-y-2">
-                  <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
-                    <span>Thickness: <span className="font-medium text-foreground">{STANDARD_THICKNESS_MM} mm</span></span>
-                    <span>Sq.ft: <span className="font-medium text-foreground">{sqFt.toFixed(2)}</span></span>
-                    <span>Qty: <span className="font-medium text-foreground">{door.quantity}</span></span>
-                  </div>
-
-                  {/* All 4 coating amounts */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 pt-1">
-                    {COATING_ORDER.map(ct => {
-                      const rate = COATING_RATES[ct];
-                      const lineTotal = sqFt * rate * door.quantity;
-                      return (
-                        <div
-                          key={ct}
-                          className="flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-md bg-background border border-border text-xs"
-                        >
-                          <span className="text-muted-foreground truncate">{COATING_LABELS[ct]}</span>
-                          <div className="flex items-center gap-2 flex-shrink-0">
-                            <span className="text-muted-foreground">₹{rate}/sq.ft</span>
-                            <span className="font-semibold text-foreground">
-                              ₹{lineTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                            </span>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+                    <td className="py-2.5 px-2 text-muted-foreground text-xs font-medium">{idx + 1}</td>
+                    <td className="py-2.5 px-2 text-foreground text-xs font-medium whitespace-nowrap">{sizeLabel}</td>
+                    <td className="py-2.5 px-2 text-right text-foreground text-xs whitespace-nowrap">
+                      ₹{singleTotal.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                    </td>
+                    <td className="py-2.5 px-2 text-right text-foreground text-xs whitespace-nowrap">
+                      ₹{doubleTotal.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                    </td>
+                    <td className="py-2.5 px-2 text-right text-foreground text-xs whitespace-nowrap">
+                      ₹{dSagTotal.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                    </td>
+                    <td className="py-2.5 px-2 text-right text-foreground text-xs whitespace-nowrap">
+                      ₹{lamTotal.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                    </td>
+                    <td className="py-2.5 px-2 text-right text-foreground text-xs whitespace-nowrap">
+                      {sqFt.toFixed(2)}
+                    </td>
+                    <td className="py-2.5 px-1 text-right">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => onRemoveDoor(door.id)}
+                        className="h-7 w-7 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                        aria-label="Remove door"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </Button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
       </CardContent>
     </Card>

@@ -1,59 +1,43 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Support fractional dimension input and clear door entries after WhatsApp share",
+  "title": "Move customer name & mobile form to app start screen",
   "requirements": [
     {
-      "id": "REQ-24",
-      "summary": "Refactor dimension input to accept both decimal and fraction formats with vertical stacking, full-width inputs, and appropriate labels/placeholders",
+      "id": "REQ-1",
+      "summary": "Remove Customer and Mobile columns from DoorList table, showing only Sr, Size, and pricing columns",
       "acceptanceCriteria": [
-        "Height input accepts '79 1/4', '79 3/8', '79.25' and correctly resolves each to the same decimal value before catalogue lookup",
-        "Width input accepts '30 1/4', '30 3/8', '30.25' and correctly resolves to decimal before catalogue lookup",
-        "Placeholder text on height input reads '79 1/4 or 79.25'",
-        "Placeholder text on width input reads '30 1/4 or 30.25'",
-        "Helper text below each input reads 'Enter as decimal (79.25) or fraction (79 1/4, 79 3/8)'",
-        "Inputs are stacked vertically (height above width), each full-width",
-        "Submit button is labeled '+ Add Door Size' and is full-width",
-        "Catalogue size badge still resolves and displays correctly after input",
-        "Invalid or unparseable input shows an appropriate error state"
+        "DoorList table no longer renders Customer or Mobile columns",
+        "Table header row does not include Customer or Mobile headings",
+        "Each door entry row only shows Sr, Size, and coating price columns"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/utils/dimensionConversion.ts",
+          "path": "frontend/src/components/DoorList.tsx",
           "operation": "modify",
-          "description": "Add a new utility function parseFractionInput that accepts a string input and returns a decimal number. The function must parse both decimal format (e.g., '79.25') and fraction format (e.g., '79 1/4', '79 3/8') supporting 1/8-inch increments (1/8, 1/4, 3/8, 1/2, 5/8, 3/4, 7/8). The parser should handle whitespace, extract whole number, numerator, and denominator, and compute the decimal value. Return NaN for invalid input. Do not modify existing catalogue lookup logic."
-        },
-        {
-          "path": "frontend/src/components/DimensionInput.tsx",
-          "operation": "modify",
-          "description": "Refactor the component to display inputs vertically (height above width) instead of side-by-side grid. Each input must be full-width. Update labels to 'Door Height (inches)' and 'Door Width (inches)'. Set placeholder text to '79 1/4 or 79.25' for height and '30 1/4 or 30.25' for width. Add helper text below each input reading 'Enter as decimal (79.25) or fraction (79 1/4, 79 3/8)'. Import and use the parseFractionInput utility from dimensionConversion.ts to convert user input strings to decimal before calling findCatalogueSize. Maintain the catalogue size badge display and error handling for invalid input."
-        },
-        {
-          "path": "frontend/src/components/DoorEntryForm.tsx",
-          "operation": "modify",
-          "description": "Update the submit button label to '+ Add Door Size' (include the plus icon). Apply a dark warm brown background color to the form card consistent with the reference image (use Tailwind classes or inline styles matching the provided screenshot). Ensure the form integrates cleanly with the updated DimensionInput component that now accepts fraction strings. No changes to validation or submission logic are required beyond what DimensionInput now provides."
+          "description": "Remove Customer and Mobile column headers from the table header row. Remove the corresponding table data cells that render customerName and mobileNumber from each door entry row. Keep only Sr, Size, and the four coating price columns (Single, Double, Laminate, Double Sagwanpatti) in both the header and body rows."
         }
       ]
     },
     {
-      "id": "REQ-25",
-      "summary": "Clear all door entries, customer name, and mobile number after WhatsApp share action is triggered",
+      "id": "REQ-2",
+      "summary": "Add customer info entry screen at app start to collect name and mobile before door entry",
       "acceptanceCriteria": [
-        "Triggering the WhatsApp Share button clears all door entries from the list",
-        "Customer Name and Mobile Number fields are also cleared after share",
-        "The door entry form is in a clean, empty state ready for new input after share",
-        "No door entries remain visible in the door list after sharing"
+        "On first load, a customer info screen is shown with fields for customer name and mobile number",
+        "User cannot reach the door entry form until they submit the customer info screen",
+        "Submitting the customer info screen stores the name and mobile in app state and navigates to the door entry / door list view",
+        "The stored customer name and mobile number are still passed through to the quotation view and WhatsApp share output"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/QuotationView.tsx",
-          "operation": "modify",
-          "description": "In the WhatsApp Share button click handler, after generating and opening the WhatsApp URL, add logic to invoke the onClearDoors callback (if passed from parent) to clear all door entries. Also invoke callbacks to clear the customerName and mobileNumber fields (if such callbacks are passed). Ensure the app returns to a clean state ready for new quotations after the share action completes."
+          "path": "frontend/src/components/CustomerInfoForm.tsx",
+          "operation": "create",
+          "description": "Create a new component that renders a customer information entry form with two text input fields (customer name and mobile number) and a Continue/Start button. Use shadcn/ui Input and Button components for consistent styling. The component should accept onSubmit callback prop that receives the customer name and mobile number values. Include basic validation to ensure both fields are filled before allowing submission. Style the form with the app's amber/gold theme to match the existing design system."
         },
         {
           "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Pass a new onClearDoors callback prop to the QuotationView component that resets the doorList state to an empty array. Also pass or extend existing callbacks for clearing customerName and mobileNumber state variables. Ensure that after the WhatsApp share is triggered, the app state is fully reset (door list empty, customer fields empty) and the door entry form is ready for fresh input."
+          "description": "Add a new state variable to track whether customer info has been submitted (e.g., hasCustomerInfo boolean). Conditionally render the CustomerInfoForm component when hasCustomerInfo is false, preventing access to the door entry form and door list. When the customer info form is submitted, set hasCustomerInfo to true, store the customerName and mobileNumber in the existing state, and display the main door entry interface. Ensure the existing customerName and mobileNumber state variables continue to be passed to QuotationView and used in the WhatsApp formatter. Import and wire the new CustomerInfoForm component at the top of the render method before the existing form/quotation view conditional."
         }
       ]
     }

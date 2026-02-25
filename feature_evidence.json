@@ -2,12 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-refactor-doorentryform-tsx-and-dimensioninput-tsx-to-accept-dimension-input-as-a-free-text-string-that-supports-both-decimal-format-e-g-79-25-and-fraction-format-e-g-79-1-4-79-3-8-each-input-field-must-be-full-width-stacked-vertically-height-first-then-width-not-side-by-side-with-label-door-height-inches-and-door-width-inches-respectively-placeholder-text-must-show-79-1-4-or-79-25-for-height-and-30-1-4-or-30-25-for-width-a-helper-text-line-below-each-input-must-read-enter-as-decimal-79-25-or-fraction-79-1-4-79-3-8-the-parser-must-convert-fraction-strings-whole-numerator-denominator-e-g-79-1-4-79-3-8-into-a-decimal-inches-value-before-passing-to-findcataloguesize-the-catalogue-size-badge-must-still-appear-below-the-inputs-as-before-the-button-label-must-be-add-door-size-the-form-card-must-use-a-dark-warm-brown-background-consistent-with-the-image-reference",
-      "featureTitle": "Refactor `DoorEntryForm.tsx` and `DimensionInput.tsx` to accept dimension input as a free-text string that supports both decimal format (e.g., '79.25') and fraction format (e.g., '79 1/4', '79 3/8'). Each input field must be full-width, stacked vertically (Height first, then Width — not side by side), with label 'Door Height (inches)' and 'Door Width (inches)' respectively. Placeholder text must show '79 1/4 or 79.25' for height and '30 1/4 or 30.25' for width. A helper text line below each input must read 'Enter as decimal (79.25) or fraction (79 1/4, 79 3/8)'. The parser must convert fraction strings (whole + numerator/denominator, e.g., '79 1/4', '79 3/8') into a decimal inches value before passing to `findCatalogueSize`. The catalogue size badge must still appear below the inputs as before. The button label must be '+ Add Door Size'. The form card must use a dark warm brown background consistent with the image reference.",
+      "featureId": "feature-remove-the-customer-and-mobile-columns-from-the-doorlist-table-the-door-entries-table-should-only-show-sr-size-and-pricing-columns-no-customer-mobile-data-displayed-per-row",
+      "featureTitle": "Remove the Customer and Mobile columns from the DoorList table. The door entries table should only show Sr, Size, and pricing columns — no customer/mobile data displayed per row.",
       "files": [
-        "frontend/src/components/DimensionInput.tsx",
-        "frontend/src/components/DoorEntryForm.tsx",
-        "frontend/src/utils/dimensionConversion.ts"
+        "frontend/src/components/DoorList.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -17,16 +15,16 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-24"
+        "REQ-1"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-after-the-user-successfully-shares-the-quotation-via-whatsapp-i-e-the-whatsapp-share-action-is-triggered-clear-all-door-entries-in-the-app-state-reset-the-door-list-to-empty-in-addition-to-clearing-customer-name-and-mobile-number-fields-the-door-entry-form-must-be-ready-for-fresh-input-after-share",
-      "featureTitle": "After the user successfully shares the quotation via WhatsApp (i.e., the WhatsApp share action is triggered), clear all door entries in the app state (reset the door list to empty) in addition to clearing Customer Name and Mobile Number fields. The door entry form must be ready for fresh input after share.",
+      "featureId": "feature-add-a-customer-info-entry-screen-at-the-very-beginning-of-the-app-flow-before-the-door-entry-form-this-screen-should-collect-the-customer-name-and-mobile-number-with-two-text-input-fields-and-a-continue-or-start-button-only-after-submitting-this-screen-should-the-user-proceed-to-the-door-dimension-entry-and-door-list-view",
+      "featureTitle": "Add a customer info entry screen at the very beginning of the app flow (before the door entry form). This screen should collect the customer name and mobile number with two text input fields and a 'Continue' or 'Start' button. Only after submitting this screen should the user proceed to the door dimension entry and door list view.",
       "files": [
         "frontend/src/App.tsx",
-        "frontend/src/components/QuotationView.tsx"
+        "frontend/src/components/CustomerInfoForm.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -36,7 +34,7 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-25"
+        "REQ-2"
       ],
       "confidence": "high"
     }

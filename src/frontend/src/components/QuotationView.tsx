@@ -3,7 +3,7 @@ import { Printer, Share2, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { type DoorEntry, COATING_RATES } from '../types/door';
 import { CoatingType } from '../backend';
-import { calcSquareFeet, formatInchesAsFraction, formatActualSize } from '../utils/dimensionConversion';
+import { calcSquareFeet, formatActualSize } from '../utils/dimensionConversion';
 import { formatWhatsAppMessage } from '../utils/whatsappFormatter';
 
 interface QuotationViewProps {
@@ -56,17 +56,6 @@ function formatPrice(amount: number): string {
   return '₹' + amount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
-/** Format catalogue door size as fractional inches e.g. "75 5/8\" × 28 5/8\"" */
-function formatDoorSizeFractional(heightInches: number, widthInches: number): string {
-  const fmt = (val: number) => {
-    const whole = Math.floor(val);
-    const frac = val - whole;
-    const fracStr = formatInchesAsFraction(frac);
-    if (fracStr === '0' || fracStr === '') return `${whole}"`;
-    return `${whole} ${fracStr}"`;
-  };
-  return `${fmt(heightInches)} × ${fmt(widthInches)}`;
-}
 
 export default function QuotationView({
   doors,
@@ -88,18 +77,13 @@ export default function QuotationView({
         const rate = COATING_RATES[ct];
         prices[ct] = parseFloat((sqFt * rate).toFixed(2));
       });
-      // finalTotals = coating amount + carpenter charge per coating type
-      const finalTotals: Record<CoatingType, number> = {} as Record<CoatingType, number>;
-      COATING_ORDER.forEach(ct => {
-        finalTotals[ct] = parseFloat((prices[ct] + door.carpenterCharge).toFixed(2));
-      });
-      return { door, idx, sqFt, prices, finalTotals };
+      return { door, idx, sqFt, prices };
     });
   }, [doors]);
 
   const totalSqFt = unifiedRows.reduce((s, r) => s + r.sqFt, 0);
 
-  // Total carpenter charges across all doors
+  // Total carpenter charges across all doors (used in Coating Type Summary section)
   const totalCarpenterCharges = doors.reduce((s, d) => s + d.carpenterCharge, 0);
   const hasAnyDoubleDoor = doors.some(d => d.isDoubleDoor);
 
@@ -111,7 +95,7 @@ export default function QuotationView({
     return totals;
   }, [unifiedRows]);
 
-  // Grand totals per coating = coating total + all carpenter charges
+  // Grand totals per coating = coating total + all carpenter charges (used in summary section)
   const grandTotalsByCoating: Record<CoatingType, number> = useMemo(() => {
     const gt = {} as Record<CoatingType, number>;
     COATING_ORDER.forEach(ct => {
@@ -173,8 +157,9 @@ export default function QuotationView({
       <div className="quotation-wrapper">
         {/* Document header */}
         <div className="print-doc-header print-only">
-          <div>
-            <h1 className="print-title">Door Coating Quotation</h1>
+          <div className="print-company-block">
+            <h1 className="print-company-name">SHIVKRUPA TRADERS ( Narangi KHED)</h1>
+            <p className="print-doc-subtitle">Door Coating Quotation</p>
             <p className="print-date">{today}</p>
           </div>
           {(customerName || mobileNumber) && (
@@ -207,19 +192,16 @@ export default function QuotationView({
             <thead>
               <tr>
                 <th className="unified-th">SR</th>
-                <th className="unified-th">ACTUAL SIZE</th>
-                <th className="unified-th cat-size-col">CAT. SIZE</th>
+                <th className="unified-th">DOOR SIZE</th>
                 <th className="unified-th">SQ.FT</th>
-                <th className="unified-th bg-blue-100 text-blue-800">SINGLE COATING</th>
-                <th className="unified-th bg-green-100 text-green-800">DOUBLE COATING</th>
-                <th className="unified-th bg-violet-100 text-violet-800">DOUBLE + SAGWAN</th>
-                <th className="unified-th bg-orange-100 text-orange-800">LAMINATE</th>
-                {hasAnyDoubleDoor && <th className="unified-th">CARP. CHARGE</th>}
-                {hasAnyDoubleDoor && <th className="unified-th">FINAL TOTAL<br /><span className="text-[9px] font-normal opacity-70">(Single)</span></th>}
+                <th className="unified-th">SINGLE COATING</th>
+                <th className="unified-th">DOUBLE COATING</th>
+                <th className="unified-th">DOUBLE + SAGWAN</th>
+                <th className="unified-th">LAMINATE</th>
               </tr>
             </thead>
             <tbody>
-              {unifiedRows.map(({ door, idx, sqFt, prices, finalTotals }) => (
+              {unifiedRows.map(({ door, idx, sqFt, prices }) => (
                 <tr key={door.id} className="unified-row">
                   <td className="unified-td unified-td-center">{idx + 1}</td>
                   <td className="unified-td unified-td-actualsize">
@@ -228,35 +210,19 @@ export default function QuotationView({
                       <span className="ml-1 font-bold" style={{ color: '#c2410c' }}>(DD)</span>
                     )}
                   </td>
-                  <td className="unified-td unified-td-doorsize cat-size-col">
-                    {formatDoorSizeFractional(door.catalogueHeight, door.catalogueWidth)}
-                  </td>
                   <td className="unified-td unified-td-center">{sqFt.toFixed(2)}</td>
-                  <td className="unified-td unified-td-price bg-blue-50 text-blue-800">
+                  <td className="unified-td unified-td-price">
                     {formatPrice(prices[CoatingType.single])}
                   </td>
-                  <td className="unified-td unified-td-price bg-green-50 text-green-800">
+                  <td className="unified-td unified-td-price">
                     {formatPrice(prices[CoatingType.double_])}
                   </td>
-                  <td className="unified-td unified-td-price bg-violet-50 text-violet-800">
+                  <td className="unified-td unified-td-price">
                     {formatPrice(prices[CoatingType.doubleSagwanpatti])}
                   </td>
-                  <td className="unified-td unified-td-price bg-orange-50 text-orange-800">
+                  <td className="unified-td unified-td-price">
                     {formatPrice(prices[CoatingType.laminate])}
                   </td>
-                  {hasAnyDoubleDoor && (
-                    <td className="unified-td unified-td-price">
-                      {door.isDoubleDoor && door.carpenterCharge > 0
-                        ? formatPrice(door.carpenterCharge)
-                        : <span className="text-muted-foreground">–</span>
-                      }
-                    </td>
-                  )}
-                  {hasAnyDoubleDoor && (
-                    <td className="unified-td unified-td-price font-semibold">
-                      {formatPrice(finalTotals[CoatingType.single])}
-                    </td>
-                  )}
                 </tr>
               ))}
             </tbody>
@@ -264,49 +230,20 @@ export default function QuotationView({
               {/* Coating subtotals row */}
               <tr className="unified-total-row">
                 <td className="unified-td unified-td-total" colSpan={2}>Coating Total</td>
-                <td className="unified-td unified-td-total cat-size-col"></td>
                 <td className="unified-td unified-td-total unified-td-center">{totalSqFt.toFixed(2)}</td>
-                <td className="unified-td unified-td-total unified-td-price bg-blue-100 text-blue-900 font-bold">
+                <td className="unified-td unified-td-total unified-td-price">
                   {formatPrice(totalsByCoating[CoatingType.single])}
                 </td>
-                <td className="unified-td unified-td-total unified-td-price bg-green-100 text-green-900 font-bold">
+                <td className="unified-td unified-td-total unified-td-price">
                   {formatPrice(totalsByCoating[CoatingType.double_])}
                 </td>
-                <td className="unified-td unified-td-total unified-td-price bg-violet-100 text-violet-900 font-bold">
+                <td className="unified-td unified-td-total unified-td-price">
                   {formatPrice(totalsByCoating[CoatingType.doubleSagwanpatti])}
                 </td>
-                <td className="unified-td unified-td-total unified-td-price bg-orange-100 text-orange-900 font-bold">
+                <td className="unified-td unified-td-total unified-td-price">
                   {formatPrice(totalsByCoating[CoatingType.laminate])}
                 </td>
-                {hasAnyDoubleDoor && (
-                  <td className="unified-td unified-td-total unified-td-price">
-                    {totalCarpenterCharges > 0 ? formatPrice(totalCarpenterCharges) : <span className="opacity-50">–</span>}
-                  </td>
-                )}
-                {hasAnyDoubleDoor && <td className="unified-td unified-td-total"></td>}
               </tr>
-              {/* Grand total row (only when there are double doors) */}
-              {hasAnyDoubleDoor && totalCarpenterCharges > 0 && (
-                <tr className="unified-total-row" style={{ background: 'var(--color-amber-100, #fef3c7)' }}>
-                  <td className="unified-td unified-td-total" colSpan={4} style={{ fontWeight: 700, color: 'var(--color-amber-900, #78350f)' }}>
-                    Grand Total (Coating + Carpenter)
-                  </td>
-                  <td className="unified-td unified-td-total unified-td-price bg-blue-200 text-blue-900" style={{ fontWeight: 700 }}>
-                    {formatPrice(grandTotalsByCoating[CoatingType.single])}
-                  </td>
-                  <td className="unified-td unified-td-total unified-td-price bg-green-200 text-green-900" style={{ fontWeight: 700 }}>
-                    {formatPrice(grandTotalsByCoating[CoatingType.double_])}
-                  </td>
-                  <td className="unified-td unified-td-total unified-td-price bg-violet-200 text-violet-900" style={{ fontWeight: 700 }}>
-                    {formatPrice(grandTotalsByCoating[CoatingType.doubleSagwanpatti])}
-                  </td>
-                  <td className="unified-td unified-td-total unified-td-price bg-orange-200 text-orange-900" style={{ fontWeight: 700 }}>
-                    {formatPrice(grandTotalsByCoating[CoatingType.laminate])}
-                  </td>
-                  <td className="unified-td unified-td-total"></td>
-                  <td className="unified-td unified-td-total"></td>
-                </tr>
-              )}
             </tfoot>
           </table>
         </div>
@@ -315,56 +252,86 @@ export default function QuotationView({
         <div className="summary-section mt-6">
           <h3 className="summary-title">Coating Type Summary</h3>
           <hr className="summary-divider" />
-          <div className="summary-rows">
-            {COATING_ORDER.map((ct, i) => {
-              const colorMap: Record<string, { bg: string; border: string; dot: string; text: string }> = {
-                [CoatingType.single]:           { bg: 'bg-blue-50',   border: 'border-l-4 border-blue-400',   dot: 'bg-blue-400',   text: 'text-blue-900' },
-                [CoatingType.double_]:          { bg: 'bg-green-50',  border: 'border-l-4 border-green-400',  dot: 'bg-green-400',  text: 'text-green-900' },
-                [CoatingType.doubleSagwanpatti]:{ bg: 'bg-violet-50', border: 'border-l-4 border-violet-400', dot: 'bg-violet-400', text: 'text-violet-900' },
-                [CoatingType.laminate]:         { bg: 'bg-orange-50', border: 'border-l-4 border-orange-400', dot: 'bg-orange-400', text: 'text-orange-900' },
-              };
-              const c = colorMap[ct] ?? { bg: '', border: '', dot: 'bg-gray-400', text: '' };
-              return (
-                <div key={ct} className={`summary-row rounded-md px-3 py-2 mb-1 ${c.bg} ${c.border}`}>
-                  <span className={`summary-label flex items-center gap-2 ${c.text}`}>
-                    <span className={`inline-block w-2.5 h-2.5 rounded-full ${c.dot} flex-shrink-0`}></span>
-                    {COATING_SUMMARY_LABELS[ct]}:
-                  </span>
-                  <span className={`summary-value font-bold ${c.text}`}>{formatPrice(totalsByCoating[ct])}</span>
-                </div>
-              );
-            })}
 
-            {/* Carpenter charges total */}
-            {hasAnyDoubleDoor && totalCarpenterCharges > 0 && (
-              <>
-                <hr className="summary-divider" />
-                <div className="summary-row">
-                  <span className="summary-label font-semibold text-orange-700">
-                    Total Carpenter Charges (DD):
-                  </span>
-                  <span className="summary-value font-semibold text-orange-700">
-                    {formatPrice(totalCarpenterCharges)}
-                  </span>
-                </div>
-                <hr className="summary-divider" />
+          <div className="overflow-x-auto">
+            <table className="summary-table w-full border-collapse">
+              <thead>
+                <tr>
+                  <th className="summary-th text-left">Coating Type</th>
+                  <th className="summary-th text-right">Total Sq.Ft</th>
+                  <th className="summary-th text-right">Total Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                {COATING_ORDER.map(ct => {
+                  const colorConfig: Record<string, { rowBg: string; dot: string; labelText: string; valueText: string; leftBorder: string }> = {
+                    [CoatingType.single]:            { rowBg: 'summary-row-blue',   dot: 'dot-blue',   labelText: 'text-blue-900',   valueText: 'text-blue-900',   leftBorder: 'border-l-4 border-blue-400'   },
+                    [CoatingType.double_]:           { rowBg: 'summary-row-green',  dot: 'dot-green',  labelText: 'text-green-900',  valueText: 'text-green-900',  leftBorder: 'border-l-4 border-green-400'  },
+                    [CoatingType.doubleSagwanpatti]: { rowBg: 'summary-row-violet', dot: 'dot-violet', labelText: 'text-violet-900', valueText: 'text-violet-900', leftBorder: 'border-l-4 border-violet-400' },
+                    [CoatingType.laminate]:          { rowBg: 'summary-row-orange', dot: 'dot-orange', labelText: 'text-orange-900', valueText: 'text-orange-900', leftBorder: 'border-l-4 border-orange-400' },
+                  };
+                  const c = colorConfig[ct] ?? { rowBg: '', dot: 'dot-gray', labelText: '', valueText: '', leftBorder: '' };
+                  const block = coatingBlocks.find(b => b.coatingType === ct);
+                  return (
+                    <tr key={ct} className={`summary-tbody-row ${c.rowBg}`}>
+                      <td className={`summary-td summary-td-label ${c.leftBorder}`}>
+                        <span className="flex items-center gap-2">
+                          <span className={`summary-dot ${c.dot}`}></span>
+                          <span className={`font-medium ${c.labelText}`}>{COATING_SUMMARY_LABELS[ct]}</span>
+                        </span>
+                      </td>
+                      <td className={`summary-td summary-td-num ${c.valueText}`}>
+                        {block ? block.totalSqFt.toFixed(2) : '0.00'}
+                      </td>
+                      <td className={`summary-td summary-td-num font-bold ${c.valueText}`}>
+                        {formatPrice(totalsByCoating[ct])}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
 
-                {/* Grand totals per coating */}
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2 mt-1">
-                  Grand Total (Coating + Carpenter)
-                </p>
-                {COATING_ORDER.map(ct => (
-                  <div key={`gt-${ct}`} className="summary-row">
-                    <span className="summary-label font-bold">
-                      {COATING_SUMMARY_LABELS[ct]}:
-                    </span>
-                    <span className="summary-value font-bold text-amber-900">
-                      {formatPrice(grandTotalsByCoating[ct])}
-                    </span>
-                  </div>
-                ))}
-              </>
-            )}
+              {/* Carpenter charges + grand totals (only when double doors exist) */}
+              {hasAnyDoubleDoor && totalCarpenterCharges > 0 && (
+                <tfoot>
+                  <tr>
+                    <td colSpan={3} className="summary-td summary-tfoot-divider-cell">
+                      <hr className="summary-tfoot-divider" />
+                    </td>
+                  </tr>
+                  <tr className="summary-carp-row">
+                    <td className="summary-td summary-td-label font-semibold text-orange-700" colSpan={2}>
+                      Total Carpenter Charges (DD)
+                    </td>
+                    <td className="summary-td summary-td-num font-semibold text-orange-700">
+                      {formatPrice(totalCarpenterCharges)}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colSpan={3} className="summary-td summary-tfoot-divider-cell">
+                      <hr className="summary-tfoot-divider" />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colSpan={3} className="summary-td summary-grand-label-cell">
+                      <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                        Grand Total (Coating + Carpenter)
+                      </span>
+                    </td>
+                  </tr>
+                  {COATING_ORDER.map(ct => (
+                    <tr key={`gt-${ct}`} className="summary-grand-row">
+                      <td className="summary-td summary-td-label font-bold" colSpan={2}>
+                        {COATING_SUMMARY_LABELS[ct]}
+                      </td>
+                      <td className="summary-td summary-td-num font-bold text-amber-900">
+                        {formatPrice(grandTotalsByCoating[ct])}
+                      </td>
+                    </tr>
+                  ))}
+                </tfoot>
+              )}
+            </table>
           </div>
         </div>
       </div>

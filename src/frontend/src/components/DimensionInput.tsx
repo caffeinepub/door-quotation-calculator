@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from 'react';
-import { Label } from '@/components/ui/label';
 import { parseFractionInput, findCatalogueSize } from '../utils/dimensionConversion';
 import CustomKeyboard from './CustomKeyboard';
 
@@ -51,7 +50,6 @@ export default function DimensionInput({
   useEffect(() => {
     const handlePointerDown = (e: PointerEvent) => {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
-        // Check if click is on the keyboard itself (fixed overlay)
         const target = e.target as HTMLElement;
         if (!target.closest('[data-custom-keyboard]')) {
           setActiveField(null);
@@ -96,86 +94,99 @@ export default function DimensionInput({
 
   return (
     <>
-      <div ref={containerRef} className="space-y-5">
+      <div ref={containerRef} className="space-y-3">
         {label && <p className="text-sm font-semibold text-foreground sr-only">{label}</p>}
 
-        {/* Height Input */}
-        <div className="space-y-1.5">
-          <Label htmlFor="dim-height" className="text-sm font-semibold text-foreground">
-            Door Height (inches)
-          </Label>
-          <div
-            id="dim-height"
-            role="textbox"
-            aria-label="Door Height"
-            tabIndex={0}
-            onClick={() => setActiveField('height')}
-            onFocus={() => setActiveField('height')}
-            className={`min-h-[52px] text-base w-full bg-blue-50 border rounded-md px-3 py-3 cursor-text flex items-center select-none outline-none transition-colors
-              ${activeField === 'height'
-                ? 'border-blue-500 ring-2 ring-blue-300'
-                : heightEntered && !validH
-                  ? 'border-destructive ring-1 ring-destructive/40'
-                  : 'border-blue-200 focus:border-blue-400'
-              }`}
-          >
-            {heightStr ? (
-              <span className="text-foreground">{heightStr}</span>
-            ) : (
-              <span className="text-muted-foreground/60">79 1/4 or 79.25</span>
-            )}
-            {activeField === 'height' && (
-              <span className="ml-0.5 inline-block w-0.5 h-5 bg-blue-600 animate-pulse" />
-            )}
-          </div>
-          <p className="text-xs text-muted-foreground">
-            Enter as decimal (79.25) or fraction (79 1/4, 79 3/8)
-          </p>
-          {heightEntered && !validH && (
-            <p className="text-xs text-destructive font-medium">Invalid height — use format like 79.25 or 79 1/4</p>
-          )}
-        </div>
+        {/* Two-column table layout for Height and Width */}
+        <table className="w-full border-collapse">
+          <thead>
+            <tr>
+              <th className="w-1/2 pb-1.5 pr-2 text-left">
+                <span className="text-sm font-semibold text-foreground">Door Height (inches)</span>
+              </th>
+              <th className="w-1/2 pb-1.5 pl-2 text-left">
+                <span className="text-sm font-semibold text-foreground">Door Width (inches)</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {/* Input fields row */}
+            <tr>
+              <td className="pr-2 align-top">
+                <div
+                  id="dim-height"
+                  role="textbox"
+                  aria-label="Door Height"
+                  tabIndex={0}
+                  onClick={() => setActiveField('height')}
+                  onFocus={() => setActiveField('height')}
+                  className={`min-h-[48px] text-base w-full bg-blue-50 border rounded-md px-2.5 py-2.5 cursor-text flex items-center select-none outline-none transition-colors
+                    ${activeField === 'height'
+                      ? 'border-blue-500 ring-2 ring-blue-300'
+                      : heightEntered && !validH
+                        ? 'border-destructive ring-1 ring-destructive/40'
+                        : 'border-blue-200 focus:border-blue-400'
+                    }`}
+                >
+                  {heightStr ? (
+                    <span className="text-foreground text-sm">{heightStr}</span>
+                  ) : (
+                    <span className="text-muted-foreground/60 text-xs">79.25 or 79 1/4</span>
+                  )}
+                  {activeField === 'height' && (
+                    <span className="ml-0.5 inline-block w-0.5 h-4 bg-blue-600 animate-pulse" />
+                  )}
+                </div>
+              </td>
+              <td className="pl-2 align-top">
+                <div
+                  id="dim-width"
+                  role="textbox"
+                  aria-label="Door Width"
+                  tabIndex={0}
+                  onClick={() => setActiveField('width')}
+                  onFocus={() => setActiveField('width')}
+                  className={`min-h-[48px] text-base w-full bg-blue-50 border rounded-md px-2.5 py-2.5 cursor-text flex items-center select-none outline-none transition-colors
+                    ${activeField === 'width'
+                      ? 'border-blue-500 ring-2 ring-blue-300'
+                      : widthEntered && !validW
+                        ? 'border-destructive ring-1 ring-destructive/40'
+                        : 'border-blue-200 focus:border-blue-400'
+                    }`}
+                >
+                  {widthStr ? (
+                    <span className="text-foreground text-sm">{widthStr}</span>
+                  ) : (
+                    <span className="text-muted-foreground/60 text-xs">30.25 or 30 1/4</span>
+                  )}
+                  {activeField === 'width' && (
+                    <span className="ml-0.5 inline-block w-0.5 h-4 bg-blue-600 animate-pulse" />
+                  )}
+                </div>
+              </td>
+            </tr>
 
-        {/* Width Input */}
-        <div className="space-y-1.5">
-          <Label htmlFor="dim-width" className="text-sm font-semibold text-foreground">
-            Door Width (inches)
-          </Label>
-          <div
-            id="dim-width"
-            role="textbox"
-            aria-label="Door Width"
-            tabIndex={0}
-            onClick={() => setActiveField('width')}
-            onFocus={() => setActiveField('width')}
-            className={`min-h-[52px] text-base w-full bg-blue-50 border rounded-md px-3 py-3 cursor-text flex items-center select-none outline-none transition-colors
-              ${activeField === 'width'
-                ? 'border-blue-500 ring-2 ring-blue-300'
-                : widthEntered && !validW
-                  ? 'border-destructive ring-1 ring-destructive/40'
-                  : 'border-blue-200 focus:border-blue-400'
-              }`}
-          >
-            {widthStr ? (
-              <span className="text-foreground">{widthStr}</span>
-            ) : (
-              <span className="text-muted-foreground/60">30 1/4 or 30.25</span>
-            )}
-            {activeField === 'width' && (
-              <span className="ml-0.5 inline-block w-0.5 h-5 bg-blue-600 animate-pulse" />
-            )}
-          </div>
-          <p className="text-xs text-muted-foreground">
-            Enter as decimal (30.25) or fraction (30 1/4, 30 3/8)
-          </p>
-          {widthEntered && !validW && (
-            <p className="text-xs text-destructive font-medium">Invalid width — use format like 30.25 or 30 1/4</p>
-          )}
-        </div>
+            {/* Hint text row */}
+            <tr>
+              <td className="pr-2 pt-1">
+                <p className="text-xs text-muted-foreground leading-tight">decimal or fraction</p>
+                {heightEntered && !validH && (
+                  <p className="text-xs text-destructive font-medium mt-0.5">Invalid — e.g. 79.25 or 79 1/4</p>
+                )}
+              </td>
+              <td className="pl-2 pt-1">
+                <p className="text-xs text-muted-foreground leading-tight">decimal or fraction</p>
+                {widthEntered && !validW && (
+                  <p className="text-xs text-destructive font-medium mt-0.5">Invalid — e.g. 30.25 or 30 1/4</p>
+                )}
+              </td>
+            </tr>
+          </tbody>
+        </table>
 
-        {/* Catalogue size indicator */}
+        {/* Catalogue size indicator — full width below both columns */}
         {bothEntered && validH && validW && (
-          <div className="flex flex-col gap-1.5">
+          <div className="flex flex-col gap-1 pt-1">
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-xs text-muted-foreground">
                 Actual: {widthStr}" × {heightStr}"
@@ -191,7 +202,6 @@ export default function DimensionInput({
                 </span>
               )}
             </div>
-            {/* Show rounding note when dimensions were rounded up */}
             {catalogueSize && catalogueSize.wasRounded && (
               <p className="text-xs text-amber-700 font-medium">
                 ↑ Rounded up to nearest catalogue size

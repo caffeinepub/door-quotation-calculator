@@ -6,7 +6,7 @@ export default function Header() {
           🚪
         </div>
         <div>
-          <h1 className="text-xl font-bold text-foreground tracking-tight">Door Quotation Calculator</h1>
+          <h1 className="text-xl font-bold text-foreground tracking-tight">SHIVKRUPA TRADERS ( Narangi KHED)</h1>
           <p className="text-xs text-muted-foreground">Professional door pricing & quotation tool</p>
         </div>
       </div>

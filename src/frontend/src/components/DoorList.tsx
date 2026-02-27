@@ -25,20 +25,19 @@ export default function DoorList({ doors, onRemoveDoor }: DoorListProps) {
         </div>
 
         {/* Horizontally scrollable table */}
-        <div className="overflow-x-auto -mx-1">
-          <table className="w-full min-w-[580px] text-sm">
+        <div className="overflow-x-auto rounded-lg border border-border shadow-sm">
+          <table className="unified-table w-full" style={{ minWidth: '640px' }}>
             <thead>
-              <tr className="border-b border-amber-200">
-                <th className="text-left py-2 px-2 font-semibold text-muted-foreground text-xs w-8">Sr</th>
-                <th className="text-left py-2 px-2 font-semibold text-muted-foreground text-xs">Actual Size</th>
-                <th className="text-left py-2 px-2 font-semibold text-muted-foreground text-xs">Cat. Size</th>
-                <th className="text-right py-2 px-2 font-semibold text-xs bg-blue-100 text-blue-800 rounded-t">Single</th>
-                <th className="text-right py-2 px-2 font-semibold text-xs bg-green-100 text-green-800 rounded-t">Double</th>
-                <th className="text-right py-2 px-2 font-semibold text-xs bg-violet-100 text-violet-800 rounded-t">D+Sag</th>
-                <th className="text-right py-2 px-2 font-semibold text-xs bg-orange-100 text-orange-800 rounded-t">Lam</th>
-                <th className="text-right py-2 px-2 font-semibold text-muted-foreground text-xs">Sq.Ft</th>
-                <th className="text-right py-2 px-2 font-semibold text-muted-foreground text-xs">Carp.</th>
-                <th className="w-8"></th>
+              <tr>
+                <th className="unified-th unified-td-center" style={{ width: '36px' }}>SR</th>
+                <th className="unified-th">DOOR SIZE</th>
+                <th className="unified-th unified-td-center">SQ.FT</th>
+                <th className="unified-th" style={{ color: '#90caf9' }}>SINGLE</th>
+                <th className="unified-th" style={{ color: '#a5d6a7' }}>DOUBLE</th>
+                <th className="unified-th" style={{ color: '#ce93d8' }}>D+SAGWAN</th>
+                <th className="unified-th" style={{ color: '#ffcc80' }}>LAMINATE</th>
+                <th className="unified-th unified-td-center">CARP.</th>
+                <th className="unified-th" style={{ width: '32px' }}></th>
               </tr>
             </thead>
             <tbody>
@@ -49,43 +48,39 @@ export default function DoorList({ doors, onRemoveDoor }: DoorListProps) {
                 const dSagTotal = sqFt * COATING_RATES[CoatingType.doubleSagwanpatti] * door.quantity;
                 const lamTotal = sqFt * COATING_RATES[CoatingType.laminate] * door.quantity;
                 const actualSizeLabel = formatActualSize(door.actualHeightInches, door.actualWidthInches);
-                const catSizeLabel = formatActualSize(door.catalogueHeight, door.catalogueWidth);
 
                 return (
                   <tr
                     key={door.id}
-                    className={`border-b border-amber-100 last:border-b-0 transition-colors ${idx % 2 === 0 ? 'bg-white hover:bg-amber-50/60' : 'bg-amber-50/40 hover:bg-amber-100/60'}`}
+                    className="unified-row"
                   >
-                    <td className="py-2.5 px-2 text-muted-foreground text-xs font-medium">{idx + 1}</td>
-                    <td className="py-2.5 px-2 text-foreground text-xs font-semibold whitespace-nowrap">
+                    <td className="unified-td unified-td-center">{idx + 1}</td>
+                    <td className="unified-td unified-td-actualsize">
                       {actualSizeLabel}
                       {door.isDoubleDoor && (
-                        <span className="ml-1 text-orange-600 font-bold">(DD)</span>
+                        <span className="ml-1 font-bold" style={{ color: '#c2410c' }}>(DD)</span>
                       )}
                     </td>
-                    <td className="py-2.5 px-2 text-muted-foreground text-xs whitespace-nowrap">{catSizeLabel}</td>
-                    <td className="py-2.5 px-2 text-right text-blue-800 text-xs whitespace-nowrap bg-blue-50">
+                    <td className="unified-td unified-td-center">{sqFt.toFixed(2)}</td>
+                    <td className="unified-td unified-td-price" style={{ color: '#1e40af' }}>
                       ₹{singleTotal.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
                     </td>
-                    <td className="py-2.5 px-2 text-right text-green-800 text-xs whitespace-nowrap bg-green-50">
+                    <td className="unified-td unified-td-price" style={{ color: '#166534' }}>
                       ₹{doubleTotal.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
                     </td>
-                    <td className="py-2.5 px-2 text-right text-violet-800 text-xs whitespace-nowrap bg-violet-50">
+                    <td className="unified-td unified-td-price" style={{ color: '#5b21b6' }}>
                       ₹{dSagTotal.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
                     </td>
-                    <td className="py-2.5 px-2 text-right text-orange-800 text-xs whitespace-nowrap bg-orange-50">
+                    <td className="unified-td unified-td-price" style={{ color: '#9a3412' }}>
                       ₹{lamTotal.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
                     </td>
-                    <td className="py-2.5 px-2 text-right text-foreground text-xs whitespace-nowrap">
-                      {sqFt.toFixed(2)}
-                    </td>
-                    <td className="py-2.5 px-2 text-right text-foreground text-xs whitespace-nowrap">
+                    <td className="unified-td unified-td-center">
                       {door.isDoubleDoor && door.carpenterCharge > 0
-                        ? `₹${door.carpenterCharge.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`
-                        : <span className="text-muted-foreground">–</span>
+                        ? <span style={{ color: '#9a3412' }}>₹{door.carpenterCharge.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
+                        : <span style={{ color: '#9ca3af' }}>–</span>
                       }
                     </td>
-                    <td className="py-2.5 px-1 text-right">
+                    <td className="unified-td unified-td-center" style={{ padding: '4px' }}>
                       <Button
                         variant="ghost"
                         size="icon"

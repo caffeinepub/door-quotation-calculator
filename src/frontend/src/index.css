@@ -184,6 +184,7 @@
   width: 100%;
   border-collapse: collapse;
   font-size: 0.85rem;
+  border: 2px solid #3e2723;
 }
 
 .unified-th {
@@ -200,7 +201,7 @@
 
 .unified-td {
   padding: 9px 12px;
-  border: 1px solid #d4c9b8;
+  border: 1.5px solid #1a1a1a;
   color: #1a1a1a;
   font-size: 0.85rem;
   white-space: nowrap;
@@ -235,7 +236,7 @@
 .unified-total-row .unified-td {
   background-color: #f5ead8 !important;
   font-weight: 700;
-  border-color: #c8b89a;
+  border: 1.5px solid #1a1a1a !important;
   color: #1a1a1a;
 }
 
@@ -357,6 +358,7 @@
   width: 100%;
   border-collapse: collapse;
   font-size: 0.875rem;
+  border: 2px solid #3e2723;
 }
 
 .summary-th {
@@ -367,7 +369,7 @@
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  border: 1px solid #3e2723;
+  border: 1px solid #6d4c41;
   white-space: nowrap;
 }
 
@@ -378,7 +380,7 @@
 }
 
 .summary-tbody-row {
-  border-bottom: 1px solid #d4c9b8;
+  border-bottom: 1.5px solid #1a1a1a;
 }
 
 .summary-tbody-row:last-child {
@@ -397,7 +399,7 @@
 
 .summary-td {
   padding: 10px 12px;
-  border: 1px solid #d4c9b8;
+  border: 1.5px solid #1a1a1a;
   vertical-align: middle;
   font-size: 0.875rem;
   color: #1a1a1a;
@@ -432,14 +434,13 @@
 .dot-gray   { background-color: #9ca3af; }
 
 .summary-tfoot-divider-cell {
-  padding: 0 !important;
-  border-left: none !important;
-  border-right: none !important;
+  padding: 4px 12px !important;
+  border: 1.5px solid #1a1a1a !important;
 }
 
 .summary-tfoot-divider {
   border: none;
-  border-top: 2px solid #d4c9b8;
+  border-top: 2px solid #1a1a1a;
   margin: 0;
 }
 
@@ -458,17 +459,20 @@
 .summary-grand-label-cell {
   background-color: #f5ead8;
   padding: 6px 12px !important;
-  border-left: none !important;
-  border-right: none !important;
+  border: 1.5px solid #1a1a1a !important;
 }
 
 .dark .summary-grand-label-cell {
   background-color: #3a2a15;
 }
 
+.summary-carp-row .summary-td {
+  border: 1.5px solid #1a1a1a !important;
+}
+
 .summary-grand-row {
   background-color: #fef3c7;
-  border-bottom: 1px solid #d4c9b8;
+  border-bottom: 1.5px solid #1a1a1a;
 }
 
 .dark .summary-grand-row {
@@ -477,6 +481,10 @@
 
 .summary-grand-row:last-child {
   border-bottom: none;
+}
+
+.summary-grand-row .summary-td {
+  border: 1.5px solid #1a1a1a !important;
 }
 
 /* ─── Print styles ─── */
@@ -579,6 +587,7 @@
     border-collapse: collapse;
     margin-bottom: 14pt;
     font-size: 9pt;
+    border: 1.5pt solid #3e2723 !important;
   }
 
   .unified-th {
@@ -587,7 +596,7 @@
     padding: 7pt 8pt;
     font-size: 8pt;
     letter-spacing: 0.04em;
-    border: 1px solid #6d4c41;
+    border: 1pt solid #6d4c41 !important;
     text-align: center;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
@@ -595,7 +604,7 @@
 
   .unified-td {
     padding: 6pt 8pt;
-    border: 1px solid #cccccc;
+    border: 1pt solid #111111 !important;
     color: #111111 !important;
     font-size: 9pt;
     white-space: nowrap;
@@ -633,7 +642,7 @@
   .unified-total-row .unified-td {
     background-color: #f5ead8 !important;
     font-weight: 700;
-    border-color: #aaaaaa;
+    border: 1pt solid #111111 !important;
     color: #111111 !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
@@ -684,6 +693,7 @@
     width: 100%;
     border-collapse: collapse;
     font-size: 9pt;
+    border: 1.5pt solid #3e2723 !important;
   }
 
   .summary-th {
@@ -691,7 +701,7 @@
     color: #ffffff !important;
     padding: 5pt 7pt;
     font-size: 8pt;
-    border: 1px solid #3e2723;
+    border: 1pt solid #6d4c41 !important;
     text-align: left;
     vertical-align: middle;
     -webkit-print-color-adjust: exact;
@@ -700,10 +710,28 @@
 
   .summary-td {
     padding: 5pt 7pt;
-    border: 1px solid #cccccc;
+    border: 1pt solid #111111 !important;
     font-size: 9pt;
     color: #111111 !important;
     vertical-align: middle;
+  }
+
+  .summary-tfoot-divider-cell {
+    padding: 4px 12px !important;
+    border: 1pt solid #111111 !important;
+  }
+
+  .summary-grand-label-cell {
+    padding: 5pt 7pt !important;
+    border: 1pt solid #111111 !important;
+  }
+
+  .summary-carp-row .summary-td {
+    border: 1pt solid #111111 !important;
+  }
+
+  .summary-grand-row .summary-td {
+    border: 1pt solid #111111 !important;
   }
 
   .summary-td-label {
@@ -746,7 +774,7 @@
   }
 
   .summary-tfoot-divider {
-    border-top: 1.5pt solid #cccccc;
+    border-top: 1.5pt solid #111111;
   }
 }
 

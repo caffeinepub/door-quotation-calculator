@@ -1,0 +1,108 @@
+import { Trash2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { type DoorEntry, COATING_RATES } from '../types/door';
+import { CoatingType } from '../backend';
+import { calcSquareFeet, formatActualSize } from '../utils/dimensionConversion';
+
+interface DoorListProps {
+  doors: DoorEntry[];
+  onRemoveDoor: (id: string) => void;
+}
+
+export default function DoorList({ doors, onRemoveDoor }: DoorListProps) {
+  if (doors.length === 0) return null;
+
+  return (
+    <Card className="border border-border shadow-sm bg-card">
+      <CardContent className="pt-5 pb-4">
+        {/* Section heading */}
+        <div className="mb-4">
+          <h2 className="text-2xl font-bold text-foreground">Door Entries</h2>
+          <p className="text-sm text-muted-foreground mt-0.5">
+            {doors.length} door {doors.length === 1 ? 'entry' : 'entries'} added
+          </p>
+        </div>
+
+        {/* Horizontally scrollable table */}
+        <div className="overflow-x-auto -mx-1">
+          <table className="w-full min-w-[580px] text-sm">
+            <thead>
+              <tr className="border-b border-amber-200">
+                <th className="text-left py-2 px-2 font-semibold text-muted-foreground text-xs w-8">Sr</th>
+                <th className="text-left py-2 px-2 font-semibold text-muted-foreground text-xs">Actual Size</th>
+                <th className="text-left py-2 px-2 font-semibold text-muted-foreground text-xs">Cat. Size</th>
+                <th className="text-right py-2 px-2 font-semibold text-xs bg-blue-100 text-blue-800 rounded-t">Single</th>
+                <th className="text-right py-2 px-2 font-semibold text-xs bg-green-100 text-green-800 rounded-t">Double</th>
+                <th className="text-right py-2 px-2 font-semibold text-xs bg-violet-100 text-violet-800 rounded-t">D+Sag</th>
+                <th className="text-right py-2 px-2 font-semibold text-xs bg-orange-100 text-orange-800 rounded-t">Lam</th>
+                <th className="text-right py-2 px-2 font-semibold text-muted-foreground text-xs">Sq.Ft</th>
+                <th className="text-right py-2 px-2 font-semibold text-muted-foreground text-xs">Carp.</th>
+                <th className="w-8"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {doors.map((door, idx) => {
+                const sqFt = calcSquareFeet(door.catalogueHeight, door.catalogueWidth);
+                const singleTotal = sqFt * COATING_RATES[CoatingType.single] * door.quantity;
+                const doubleTotal = sqFt * COATING_RATES[CoatingType.double_] * door.quantity;
+                const dSagTotal = sqFt * COATING_RATES[CoatingType.doubleSagwanpatti] * door.quantity;
+                const lamTotal = sqFt * COATING_RATES[CoatingType.laminate] * door.quantity;
+                const actualSizeLabel = formatActualSize(door.actualHeightInches, door.actualWidthInches);
+                const catSizeLabel = formatActualSize(door.catalogueHeight, door.catalogueWidth);
+
+                return (
+                  <tr
+                    key={door.id}
+                    className={`border-b border-amber-100 last:border-b-0 transition-colors ${idx % 2 === 0 ? 'bg-white hover:bg-amber-50/60' : 'bg-amber-50/40 hover:bg-amber-100/60'}`}
+                  >
+                    <td className="py-2.5 px-2 text-muted-foreground text-xs font-medium">{idx + 1}</td>
+                    <td className="py-2.5 px-2 text-foreground text-xs font-semibold whitespace-nowrap">
+                      {actualSizeLabel}
+                      {door.isDoubleDoor && (
+                        <span className="ml-1 text-orange-600 font-bold">(DD)</span>
+                      )}
+                    </td>
+                    <td className="py-2.5 px-2 text-muted-foreground text-xs whitespace-nowrap">{catSizeLabel}</td>
+                    <td className="py-2.5 px-2 text-right text-blue-800 text-xs whitespace-nowrap bg-blue-50">
+                      ₹{singleTotal.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                    </td>
+                    <td className="py-2.5 px-2 text-right text-green-800 text-xs whitespace-nowrap bg-green-50">
+                      ₹{doubleTotal.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                    </td>
+                    <td className="py-2.5 px-2 text-right text-violet-800 text-xs whitespace-nowrap bg-violet-50">
+                      ₹{dSagTotal.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                    </td>
+                    <td className="py-2.5 px-2 text-right text-orange-800 text-xs whitespace-nowrap bg-orange-50">
+                      ₹{lamTotal.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                    </td>
+                    <td className="py-2.5 px-2 text-right text-foreground text-xs whitespace-nowrap">
+                      {sqFt.toFixed(2)}
+                    </td>
+                    <td className="py-2.5 px-2 text-right text-foreground text-xs whitespace-nowrap">
+                      {door.isDoubleDoor && door.carpenterCharge > 0
+                        ? `₹${door.carpenterCharge.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`
+                        : <span className="text-muted-foreground">–</span>
+                      }
+                    </td>
+                    <td className="py-2.5 px-1 text-right">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => onRemoveDoor(door.id)}
+                        className="h-7 w-7 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                        aria-label="Remove door"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </Button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
